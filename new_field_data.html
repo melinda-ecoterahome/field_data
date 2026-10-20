@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoExposure™ | Field Data</title>
+
+  <style>
+    :root {
+      --bg:#f6f8f7;
+      --card:#fff;
+      --text:#1f2933;
+      --muted:#6b7280;
+      --border:#d7ded9;
+      --accent:#0f766e;
+      --accent-dark:#115e59;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header {
+      padding:22px 16px;
+      background:linear-gradient(135deg,#0f766e,#164e63);
+      color:#fff;
+    }
+
+    header h1 {
+      margin:0 0 6px;
+      font-size:1.45rem;
+    }
+
+    header p {
+      margin:0;
+      font-size:.95rem;
+      opacity:.9;
+    }
+
+    main {
+      max-width:760px;
+      margin:0 auto;
+      padding:16px;
+    }
+
+    section {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:16px;
+      margin-bottom:16px;
+      box-shadow:0 1px 4px rgba(0,0,0,.04);
+    }
+
+    h2 {
+      font-size:1.05rem;
+      margin:0 0 14px;
+    }
+
+    label {
+      display:block;
+      font-size:.88rem;
+      font-weight:600;
+      margin:12px 0 5px;
+    }
+
+    textarea {
+      width:100%;
+      padding:11px 12px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      font-size:1rem;
+      background:#fff;
+      min-height:120px;
+      resize:vertical;
+    }
+
+    .info-box {
+      margin-top:10px;
+      padding:10px;
+      background:#eef7f5;
+      border-radius:10px;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+
+    .image-slot {
+      border:1px dashed var(--border);
+      border-radius:12px;
+      padding:12px;
+      background:#fbfcfb;
+    }
+
+    .preview {
+      display:none;
+      margin-top:12px;
+      max-height:320px;
+      max-width:100%;
+      border-radius:10px;
+      border:1px solid var(--border);
+    }
+
+    button {
+      border:none;
+      border-radius:10px;
+      padding:11px 14px;
+      font-size:.98rem;
+      font-weight:700;
+      cursor:pointer;
+      background:var(--accent);
+      color:#fff;
+      width:100%;
+      margin-top:10px;
+    }
+
+    button:hover {
+      background:var(--accent-dark);
+    }
+
+    button.secondary {
+      background:#e5e7eb;
+      color:var(--text);
+    }
+
+    .top-nav {
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .top-nav a {
+      color:var(--accent);
+      font-weight:700;
+      text-decoration:none;
+    }
+
+    .status {
+      margin-top:10px;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .captured-label {
+      display:none;
+      margin-top:8px;
+      font-size:.86rem;
+      color:#047857;
+      font-weight:700;
+    }
+
+    .button-row {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .button-row button,
+    .button-row label {
+      margin-top:0;
+    }
+
+    .file-button {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:none;
+      border-radius:10px;
+      padding:11px 14px;
+      font-size:.98rem;
+      font-weight:700;
+      cursor:pointer;
+      background:#e5e7eb;
+      color:var(--text);
+      width:100%;
+    }
+
+    .file-button input {
+      display:none;
+    }
+
+    dialog {
+      border:none;
+      border-radius:16px;
+      padding:0;
+      max-width:520px;
+      width:calc(100% - 24px);
+      box-shadow:0 18px 60px rgba(0,0,0,.28);
+    }
+
+    dialog::backdrop {
+      background:rgba(15,23,42,.66);
+    }
+
+    .dialog-inner {
+      padding:16px;
+    }
+
+    .dialog-actions {
+      display:flex;
+      gap:10px;
+    }
+
+    .dialog-actions button {
+      width:auto;
+      flex:1;
+    }
+
+    @media (max-width:520px) {
+      .button-row {
+        grid-template-columns:1fr;
+      }
+    }
+      main{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-around;min-height:80px;padding:10px 4px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid #d7ded9;box-shadow:0 -4px 16px rgba(0,22,41,.04);backdrop-filter:blur(12px)}
+    .bottom-nav a{display:flex;flex:1;min-width:0;min-height:48px;max-width:120px;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 2px;border-radius:24px;color:#6b7280;text-decoration:none;font-size:10px;font-weight:700}
+    .bottom-nav a:hover{color:#0f766e}
+    .bottom-nav a[aria-current="page"]{background:#c7eeea;color:#00504b}
+    .bottom-nav a:focus-visible{outline:3px solid #0f766e;outline-offset:1px}
+    .bottom-nav .material-symbols-outlined{font-size:24px;line-height:1}
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Field Data</h1>
+    <p>Capture a photo, add location and notes, and save your observation.</p>
+  </header>
+
+  <main>
+    <div class="top-nav">
+      <a href="./my-field-data.html">My Field Data →</a>
+    </div>
+
+    <section>
+      <h2>Photo</h2>
+
+      <div class="image-slot">
+        <div class="button-row">
+          <button type="button" onclick="openPhotoCamera()">📷 Take Photo</button>
+
+          <label class="file-button">
+            📎 Choose Photo / File
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              onchange="handleFileSelect(event)"
+            />
+          </label>
+        </div>
+
+        <div id="photoCaptured" class="captured-label">✓ Photo added</div>
+        <img id="photoPreview" class="preview" alt="Field data preview" />
+      </div>
+    </section>
+
+    <section>
+      <h2>Location</h2>
+
+      <button type="button" onclick="captureGPS()">📍 Add GPS</button>
+      <div id="gpsStatus" class="info-box">No GPS location captured yet.</div>
+    </section>
+
+    <section>
+      <h2>Field Notes</h2>
+
+      <textarea
+        id="notes"
+        placeholder="Type or dictate field notes, observations, device readings, environmental conditions, or other information..."
+      ></textarea>
+      <div class="info-box">You can type or use your phone keyboard’s microphone to dictate notes.</div>
+    </section>
+
+    <section>
+      <h2>Share Observation</h2>
+      <button id="imageButton" type="button" onclick="prepareObservationImage()">Create Observation Card</button>
+      <img id="cardPreview" alt="Completed observation card preview" hidden style="width:100%;margin-top:14px;border-radius:10px;border:1px solid var(--border)">
+      <button id="shareImageButton" type="button" onclick="shareObservationImage()" hidden>Share Observation</button>
+      <button id="downloadImageButton" class="secondary" type="button" onclick="downloadObservationImage()" hidden>Download Observation Image</button>
+      <div id="imageStatus" class="status" role="status" aria-live="polite"></div>
+      <details style="margin-top:16px"><summary>Email with Ecotera Asia in CC</summary>
+
+      <label for="observationEmail">Email address</label>
+      <input id="observationEmail" type="email" autocomplete="email" placeholder="name@example.com" required style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:1rem">
+      <button type="button" onclick="emailObservation()">Email Observation</button>
+      <div class="info-box">Opens your email app with hello@ecoteraasia.com in CC. Review and send the draft there. To include the photo report, generate and download the PDF below, then attach it to your email.</div>
+      <div id="emailStatus" class="status" role="status" aria-live="polite"></div>
+      </details>
+      <button class="secondary" type="button" onclick="clearDraft()">Clear Current Draft</button>
+
+      <button id="pdfButton" type="button" onclick="generatePDF()">Generate PDF &amp; Share</button>
+      <button id="sharePDFButton" type="button" onclick="sharePreparedPDF()" hidden>Share PDF</button>
+      <button id="downloadPDFButton" class="secondary" type="button" onclick="downloadPreparedPDF()" hidden>Download PDF</button>
+      <div id="pdfStatus" class="status" role="status" aria-live="polite"></div>
+      <div class="info-box">Field observation only — not a laboratory analytical result.</div>
+      <div id="saveStatus" class="status">Observations stay on this page until you clear or leave it.</div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="index.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg><span>Home</span></a>
+    <a href="new-sample.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Sample</span></a>
+    <a href="my-data.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6H2v16h16v-2"/><rect x="6" y="2" width="16" height="16" rx="1"/><circle cx="16" cy="7" r="1"/><path d="m8 15 4-5 3 3 2-2 3 4"/></svg><span>My Data</span></a>
+    <a href="new_field_data.html" aria-current="page"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12M3 9h10M3 13h7m3 4 6-6 3 3-6 6-4 1z"/></svg><span>Field</span></a>
+    <a href="practice.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6m-5 0v7l-6 9q-1 2 2 2h12q3 0 2-2l-6-9V3M8 15h8"/></svg><span>Practice</span></a>
+    <a href="learn.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 2 4 2 2 3v16c3-1 7-1 10 2 3-3 7-3 10-2V3c-2-1-7-1-10 2zM5 7h4M5 11h4M15 7h4M15 11h4"/></svg><span>Learn</span></a>
+  </nav>
+
+  <dialog id="photoDialog">
+    <div class="dialog-inner">
+      <h2>Take Photo</h2>
+
+      <video
+        id="photoCameraPreview"
+        autoplay
+        playsinline
+        muted
+        style="width:100%;max-height:65vh;background:#000;border-radius:12px;"
+      ></video>
+
+      <div id="photoCameraStatus" class="status">Opening camera...</div>
+
+      <div class="dialog-actions">
+        <button type="button" onclick="takeLivePhoto()">Take Photo</button>
+        <button type="button" class="secondary" onclick="closePhotoCamera()">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    /*
+      Expected Supabase setup:
+
+      Storage bucket:
+        field-data
+
+      Table:
+        field_data
+
+      Suggested columns:
+        id uuid primary key default gen_random_uuid()
+        user_id uuid not null
+        file_path text
+        notes text
+        latitude double precision
+        longitude double precision
+        created_at timestamptz default now()
+
+      Recommended:
+        Enable Row Level Security on field_data.
+        Allow authenticated users to insert/select only rows where user_id = auth.uid().
+        Configure matching per-user storage policies for field-data.
+    */
+
+    const SUPABASE_URL = "https://qvmgrchkmmezpwhlfxjv.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_3M-2qrVCnjO9XfjsBCUf6g_l1wSuwVu";
+
+    const OTHER_DATA_BUCKET = "field-data";
+    const OTHER_DATA_TABLE = "field_data";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    let currentUser = null;
+    let latitude = null;
+    let longitude = null;
+    let photoStream = null;
+    let selectedPhotoBlob = null;
+    let observationTimestamp = null;
+    let lastSavedObservation = null;
+    let preparedPDF = null;
+    let preparedImage = null;
+    let cardPreviewURL = null;
+    let cardRevision = 0;
+    function resetObservationCard() {
+      cardRevision++;
+      preparedImage = null;
+      if (cardPreviewURL) URL.revokeObjectURL(cardPreviewURL);
+      cardPreviewURL = null;
+      const preview = document.getElementById('cardPreview');
+      preview.hidden = true; preview.removeAttribute('src');
+      document.getElementById('shareImageButton').hidden = true;
+      document.getElementById('downloadImageButton').hidden = true;
+      document.getElementById('imageStatus').textContent = '';
+    }
+    function markObservation() {
+      resetObservationCard();
+      observationTimestamp ||= new Date().toISOString();
+      preparedPDF = null;
+      document.getElementById('sharePDFButton').hidden = true;
+      document.getElementById('downloadPDFButton').hidden = true;
+      document.getElementById('pdfStatus').textContent = '';
+    }
+    document.getElementById('notes').addEventListener('input', markObservation);
+    function observationSnapshot() {
+      const notes = document.getElementById('notes').value.trim();
+      if (selectedPhotoBlob || notes || latitude !== null) {
+        observationTimestamp ||= new Date().toISOString();
+        return {photo: selectedPhotoBlob, notes, latitude, longitude, timestamp: observationTimestamp};
+      }
+      return lastSavedObservation;
+    }
+
+    async function requireLogin() {
+      const { data, error } = await supabaseClient.auth.getUser();
+
+      if (error || !data.user) {
+        window.location.replace("login.html");
+        return;
+      }
+
+      currentUser = data.user;
+    }
+
+    function emailObservation() {
+      const input = document.getElementById('observationEmail');
+      const status = document.getElementById('emailStatus');
+      if (!input.reportValidity()) { status.textContent = 'Enter a valid email address.'; return; }
+      const observation = observationSnapshot();
+      if (!observation) { status.textContent = 'Add a photo, GPS location or notes first.'; return; }
+      const gps = Number.isFinite(observation.latitude) && Number.isFinite(observation.longitude)
+        ? observation.latitude.toFixed(6) + ', ' + observation.longitude.toFixed(6) : 'Not captured';
+      const body = [
+        'Ecotera Asia — Field Observation',
+        'Timestamp: ' + observation.timestamp,
+        'GPS coordinates: ' + gps,
+        '', 'Field notes:', observation.notes || 'No notes added.', '',
+        observation.photo ? 'Photo: included in the PDF report. Attach the downloaded PDF before sending.' : 'Photo: no photo added.',
+        '', 'Field observation only — not a laboratory analytical result.',
+        '', 'hello@ecoteraasia.com | ecoteraasia.com'
+      ].join('\n');
+      const href = 'mailto:' + encodeURIComponent(input.value.trim()) +
+        '?cc=' + encodeURIComponent('hello@ecoteraasia.com') +
+        '&subject=' + encodeURIComponent('Ecotera Asia Field Observation') + '&body=' + encodeURIComponent(body);
+      const link = document.createElement('a');
+      link.href = href; document.body.appendChild(link); link.click(); link.remove();
+      status.textContent = 'Email draft requested in your email app. Attach the PDF if needed, then send. This page has not sent an email.';
+    }
+
+    function captureGPS() {
+      const box = document.getElementById("gpsStatus");
+
+      if (!window.isSecureContext) {
+        box.textContent = 'GPS requires HTTPS. Open https://field.ecoteraasia.com/new_field_data.html, then allow location access.';
+        return;
+      }
+      if (!navigator.geolocation) {
+        box.textContent = "GPS is not supported in this browser.";
+        return;
+      }
+
+      box.textContent = "Requesting GPS location...";
+
+      navigator.geolocation.getCurrentPosition(
+        p => {
+          markObservation();
+          latitude = p.coords.latitude;
+          longitude = p.coords.longitude;
+
+          box.textContent =
+            `Location captured: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+        },
+
+        e => {
+          box.textContent = `GPS error: ${e.message}`;
+        },
+
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    async function openPhotoCamera() {
+      const dialog = document.getElementById("photoDialog");
+      const video = document.getElementById("photoCameraPreview");
+      const status = document.getElementById("photoCameraStatus");
+
+      status.textContent = "Opening camera...";
+      dialog.showModal();
+
+      try {
+        photoStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
+          audio: false
+        });
+
+        video.srcObject = photoStream;
+        await video.play();
+
+        status.textContent = "Position the subject, then tap Take Photo.";
+      } catch (e) {
+        console.error("Photo camera error:", e);
+
+        status.textContent =
+          "Camera unavailable. Please allow camera access in your browser settings.";
+      }
+    }
+
+    function stopPhotoStream() {
+      if (photoStream) {
+        photoStream.getTracks().forEach(track => track.stop());
+        photoStream = null;
+      }
+
+      document.getElementById("photoCameraPreview").srcObject = null;
+    }
+
+    function closePhotoCamera() {
+      stopPhotoStream();
+
+      const dialog = document.getElementById("photoDialog");
+      if (dialog.open) dialog.close();
+    }
+
+    async function takeLivePhoto() {
+      const video = document.getElementById("photoCameraPreview");
+      const status = document.getElementById("photoCameraStatus");
+
+      if (!photoStream || !video.videoWidth || !video.videoHeight) {
+        status.textContent = "Camera is not ready yet.";
+        return;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const blob = await new Promise(resolve => {
+        canvas.toBlob(resolve, "image/jpeg", 0.92);
+      });
+
+      if (!blob) {
+        status.textContent = "Photo capture failed. Please try again.";
+        return;
+      }
+
+      markObservation();
+      selectedPhotoBlob = blob;
+      showPhotoPreview(blob);
+
+      stopPhotoStream();
+      document.getElementById("photoDialog").close();
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files?.[0];
+
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        document.getElementById("saveStatus").textContent =
+          "Please choose an image file.";
+        event.target.value = "";
+        return;
+      }
+
+      markObservation();
+      selectedPhotoBlob = file;
+      showPhotoPreview(file);
+    }
+
+    function showPhotoPreview(blob) {
+      const preview = document.getElementById("photoPreview");
+
+      if (preview.dataset.objectUrl) {
+        URL.revokeObjectURL(preview.dataset.objectUrl);
+      }
+
+      const objectUrl = URL.createObjectURL(blob);
+
+      preview.src = objectUrl;
+      preview.dataset.objectUrl = objectUrl;
+      preview.style.display = "block";
+
+      document.getElementById("photoCaptured").style.display = "block";
+    }
+
+    async function compressImage(blob, baseName) {
+      const bitmap = await createImageBitmap(blob);
+      const MAX_DIMENSION = 1400;
+
+      const scale = Math.min(
+        1,
+        MAX_DIMENSION / Math.max(bitmap.width, bitmap.height)
+      );
+
+      const width = Math.round(bitmap.width * scale);
+      const height = Math.round(bitmap.height * scale);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(bitmap, 0, 0, width, height);
+
+      const compressedBlob = await new Promise(resolve => {
+        canvas.toBlob(resolve, "image/webp", 0.72);
+      });
+
+      bitmap.close();
+
+      if (!compressedBlob) {
+        throw new Error("Image compression failed.");
+      }
+
+      return new File(
+        [compressedBlob],
+        `${baseName}.webp`,
+        { type: "image/webp" }
+      );
+    }
+
+    function timestampString() {
+      const d = new Date();
+      const p = v => String(v).padStart(2, "0");
+
+      return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}`;
+    }
+
+    async function uploadPhoto(photo = selectedPhotoBlob) {
+      if (!photo) {
+        return null;
+      }
+
+      const file = await compressImage(
+        photo,
+        `EcoExposure_FieldData_${timestampString()}`
+      );
+
+      const path =
+        `${currentUser.id}/EcoExposure_FieldData_${timestampString()}.webp`;
+
+      const { error } =
+        await supabaseClient.storage
+          .from(OTHER_DATA_BUCKET)
+          .upload(
+            path,
+            file,
+            {
+              cacheControl: "3600",
+              upsert: false
+            }
+          );
+
+      if (error) {
+        throw new Error(
+          `Photo upload failed: ${error.message}`
+        );
+      }
+
+      return path;
+    }
+
+    async function saveEntry() {
+      const status = document.getElementById("saveStatus");
+      const notes = document.getElementById("notes").value.trim();
+
+      status.textContent = "Checking login...";
+
+      if (!currentUser) {
+        await requireLogin();
+      }
+
+      if (!currentUser) {
+        return;
+      }
+
+      if (!selectedPhotoBlob && !notes) {
+        status.textContent =
+          "Add a photo or enter a note before saving.";
+        return;
+      }
+
+      const savedObservation = observationSnapshot();
+      try {
+        let photoPath = null;
+
+        if (savedObservation.photo) {
+          status.textContent = "Uploading photo...";
+          photoPath = await uploadPhoto(savedObservation.photo);
+        }
+
+        status.textContent = "Saving entry...";
+
+        const { error } =
+          await supabaseClient
+            .from(OTHER_DATA_TABLE)
+            .insert({
+              user_id: currentUser.id,
+              file_path: photoPath,
+              notes: savedObservation.notes || null,
+              latitude: savedObservation.latitude,
+              longitude: savedObservation.longitude
+            });
+
+        if (error) {
+          throw new Error(
+            `Database save failed: ${error.message}`
+          );
+        }
+
+        status.textContent = "✅ Field Data saved.";
+
+        lastSavedObservation = savedObservation;
+        // Preserve any new edits made while this save was in progress.
+        const latest = observationSnapshot();
+        if (latest.photo === savedObservation.photo && latest.notes === savedObservation.notes &&
+            latest.latitude === savedObservation.latitude && latest.longitude === savedObservation.longitude) clearDraft(false);
+
+      } catch (e) {
+        console.error(e);
+        status.textContent = e.message;
+      }
+    }
+
+    function clearDraft(updateStatus = true) {
+      observationTimestamp = null;
+      if (updateStatus) { lastSavedObservation = null; markObservation(); observationTimestamp = null; }
+      document.getElementById("notes").value = "";
+      document.getElementById("fileInput").value = "";
+
+      latitude = null;
+      longitude = null;
+      selectedPhotoBlob = null;
+
+      document.getElementById("gpsStatus").textContent =
+        "No GPS location captured yet.";
+
+      const preview = document.getElementById("photoPreview");
+
+      if (preview.dataset.objectUrl) {
+        URL.revokeObjectURL(preview.dataset.objectUrl);
+        delete preview.dataset.objectUrl;
+      }
+
+      preview.style.display = "none";
+      preview.removeAttribute("src");
+
+      document.getElementById("photoCaptured").style.display = "none";
+
+      if (updateStatus) {
+        document.getElementById("saveStatus").textContent =
+          "Draft cleared.";
+      }
+    }
+
+    // Self-contained client-side PDF: rasterized report pages preserve Unicode notes.
+    function loadReportImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error('Could not load a report image. Check the photo format and logo path.'));
+        img.src = src;
+      });
+    }
+    async function buildObservationPDF(observation) {
+      const logo = await loadReportImage('images/ecotera-asia-logo-300dpi-print.png');
+      let photo = null;
+      if (observation.photo) {
+        const url = URL.createObjectURL(observation.photo);
+        try { photo = await loadReportImage(url); }
+        finally { URL.revokeObjectURL(url); }
+      }
+      const pages = [];
+      let canvas, ctx, y;
+      const width = 1240, height = 1754, margin = 85, bottom = 1530;
+      function newPage() {
+        if (canvas) pages.push(canvas.toDataURL('image/jpeg', 0.92));
+        canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+        ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, width, height);
+        const scale = Math.min(300 / logo.naturalWidth, 100 / logo.naturalHeight);
+        ctx.drawImage(logo, margin, 55, logo.naturalWidth * scale, logo.naturalHeight * scale);
+        ctx.fillStyle = '#115e59'; ctx.font = 'bold 36px Arial';
+        ctx.fillText('Field Observation', margin, 215);
+        ctx.fillStyle = '#4b5563'; ctx.font = '22px Arial';
+        ctx.fillText('Ecotera Asia', margin, 252);
+        ctx.fillStyle = '#374151'; ctx.font = '20px Arial';
+        ctx.fillText('Field observation only — not a laboratory analytical result.', margin, 1610);
+        ctx.fillText('hello@ecoteraasia.com  |  ecoteraasia.com', margin, 1650);
+        ctx.fillText('Page ' + (pages.length + 1), margin, 1690);
+        y = 310;
+      }
+      function line(text, bold = false) {
+        if (y + 36 > bottom) newPage();
+        ctx.fillStyle = '#1f2933'; ctx.font = (bold ? 'bold ' : '') + '25px Arial';
+        ctx.fillText(text, margin, y); y += 36;
+      }
+      function wrapped(text) {
+        // Wrap by Unicode code point, including long unbroken words and CJK text.
+        for (const paragraph of text.replace(/\r\n?/g, '\n').split('\n')) {
+          let current = '';
+          for (const char of paragraph) {
+            ctx.font = '25px Arial';
+            if (current && ctx.measureText(current + char).width > width - margin * 2) {
+              line(current); current = '';
+            }
+            current += char;
+          }
+          line(current);
+        }
+      }
+      newPage();
+      line('Observation timestamp', true);
+      wrapped(new Date(observation.timestamp).toLocaleString() + ' (' + observation.timestamp + ')');
+      y += 18;
+      line('GPS coordinates', true);
+      wrapped(Number.isFinite(observation.latitude) && Number.isFinite(observation.longitude)
+        ? 'Latitude: ' + observation.latitude.toFixed(6) + '   Longitude: ' + observation.longitude.toFixed(6)
+        : 'Not captured');
+      y += 18;
+      line('Photo', true);
+      if (photo) {
+        const scale = Math.min((width - 2 * margin) / photo.naturalWidth, 620 / photo.naturalHeight);
+        const w = photo.naturalWidth * scale, h = photo.naturalHeight * scale;
+        if (y + h + 30 > bottom) newPage();
+        ctx.drawImage(photo, margin, y, w, h); y += h + 45;
+      } else { line('No photo added'); y += 18; }
+      line('Field notes', true);
+      wrapped(observation.notes || 'No notes added');
+      pages.push(canvas.toDataURL('image/jpeg', 0.92));
+      return encodeReportPDF(pages, width, height);
+    }
+    function encodeReportPDF(pages, width, height) {
+      const encoder = new TextEncoder(), parts = [], offsets = [0];
+      let length = 0;
+      const append = value => {
+        const bytes = typeof value === 'string' ? encoder.encode(value) : value;
+        parts.push(bytes); length += bytes.length;
+      };
+      const object = (id, content) => { offsets[id] = length; append(id + ' 0 obj\n' + content + '\nendobj\n'); };
+      append('%PDF-1.4\n');
+      object(1, '<< /Type /Catalog /Pages 2 0 R >>');
+      object(2, '<< /Type /Pages /Count ' + pages.length + ' /Kids [' + pages.map((_, i) => (3 + i * 3) + ' 0 R').join(' ') + '] >>');
+      pages.forEach((data, i) => {
+        const id = 3 + i * 3;
+        object(id, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Photo ' + (id + 1) + ' 0 R >> >> /Contents ' + (id + 2) + ' 0 R >>');
+        const raw = atob(data.split(',')[1]);
+        const bytes = Uint8Array.from(raw, c => c.charCodeAt(0));
+        offsets[id + 1] = length;
+        append((id + 1) + ' 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + width + ' /Height ' + height + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + bytes.length + ' >>\nstream\n');
+        append(bytes); append('\nendstream\nendobj\n');
+        const commands = 'q 595.28 0 0 841.89 0 0 cm /Photo Do Q\n';
+        object(id + 2, '<< /Length ' + encoder.encode(commands).length + ' >>\nstream\n' + commands + 'endstream');
+      });
+      const xref = length, count = 3 + pages.length * 3;
+      append('xref\n0 ' + count + '\n0000000000 65535 f \n');
+      for (let i = 1; i < count; i++) append(String(offsets[i]).padStart(10, '0') + ' 00000 n \n');
+      append('trailer\n<< /Size ' + count + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF\n');
+      return new Blob(parts, {type: 'application/pdf'});
+    }
+    function supportsPDFSharing(file) {
+      try { return !!(navigator.share && navigator.canShare && navigator.canShare({files: [file]})); }
+      catch (_) { return false; }
+    }
+    async function generatePDF() {
+      const status = document.getElementById('pdfStatus'), button = document.getElementById('pdfButton');
+      const observation = observationSnapshot();
+      if (!observation) { status.textContent = 'Add a photo, GPS location or notes first.'; return; }
+      button.disabled = true; preparedPDF = null;
+      document.getElementById('sharePDFButton').hidden = true;
+      document.getElementById('downloadPDFButton').hidden = true;
+      status.textContent = 'Generating PDF…';
+      try {
+        const blob = await buildObservationPDF(observation);
+        const filename = 'Ecotera_Field_Observation_' + observation.timestamp.replace(/[:.]/g, '-') + '.pdf';
+        preparedPDF = new File([blob], filename, {type: 'application/pdf'});
+        document.getElementById('downloadPDFButton').hidden = false;
+        if (supportsPDFSharing(preparedPDF)) {
+          document.getElementById('sharePDFButton').hidden = false;
+          status.textContent = 'PDF ready. Tap Share PDF to choose an app, or Download PDF.';
+        } else { downloadPreparedPDF(); }
+      } catch (e) { status.textContent = 'PDF could not be generated: ' + e.message; }
+      finally { button.disabled = false; }
+    }
+    function downloadPreparedPDF() {
+      if (!preparedPDF) return;
+      const url = URL.createObjectURL(preparedPDF), link = document.createElement('a');
+      link.href = url; link.download = preparedPDF.name;
+      document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      document.getElementById('pdfStatus').textContent = 'PDF download started. You can download it again below.';
+    }
+    async function sharePreparedPDF() {
+      if (!preparedPDF) return;
+      if (!supportsPDFSharing(preparedPDF)) { downloadPreparedPDF(); return; }
+      const status = document.getElementById('pdfStatus');
+      try {
+        // No asynchronous preparation here: preserve the tap's native-share activation.
+        await navigator.share({files: [preparedPDF], title: 'Ecotera Asia Field Observation'});
+        status.textContent = 'PDF shared.';
+      } catch (e) {
+        if (e.name === 'AbortError') status.textContent = 'Sharing cancelled. Your PDF is still ready.';
+        else { downloadPreparedPDF(); status.textContent = 'Sharing unavailable. PDF download started.'; }
+      }
+    }
+
+
+    async function renderObservationCard(observation) {
+      const logo = await loadReportImage('images/ecotera-asia-logo-300dpi-print.png');
+      let photo = null;
+      if (observation.photo) {
+        const url = URL.createObjectURL(observation.photo);
+        try { photo = await loadReportImage(url); }
+        finally { URL.revokeObjectURL(url); }
+      }
+      const width = 1080, margin = 64, contentWidth = width - margin * 2;
+      const measure = document.createElement('canvas').getContext('2d');
+      measure.font = '28px Arial';
+      function wrap(text) {
+        const lines = [];
+        for (const paragraph of text.replace(/\r\n?/g, '\n').split('\n')) {
+          let line = '';
+          for (const char of paragraph) {
+            if (line && measure.measureText(line + char).width > contentWidth) { lines.push(line); line = ''; }
+            line += char;
+          }
+          lines.push(line);
+        }
+        return lines;
+      }
+      const notes = wrap(observation.notes || 'No field notes added.');
+      const photoScale = photo ? Math.min(contentWidth / photo.naturalWidth, 720 / photo.naturalHeight) : 0;
+      const photoHeight = photo ? Math.round(photo.naturalHeight * photoScale) : 0;
+      const height = 640 + photoHeight + notes.length * 42;
+      if (height > 16000) throw new Error('These notes are too long for one image. Use Generate PDF & Share for the complete observation.');
+      const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#0f766e'; ctx.fillRect(0, 0, width, 14);
+      const logoScale = Math.min(240 / logo.naturalWidth, 100 / logo.naturalHeight);
+      ctx.drawImage(logo, margin, 42, logo.naturalWidth * logoScale, logo.naturalHeight * logoScale);
+      ctx.fillStyle = '#115e59'; ctx.font = 'bold 42px Arial'; ctx.fillText('Field Observation', margin, 208);
+      ctx.fillStyle = '#4b5563'; ctx.font = '24px Arial';
+      ctx.fillText('Captured: ' + new Date(observation.timestamp).toLocaleString(), margin, 256);
+      ctx.font = '22px Arial'; ctx.fillText('Timestamp: ' + observation.timestamp, margin, 292);
+      const gps = Number.isFinite(observation.latitude) && Number.isFinite(observation.longitude)
+        ? observation.latitude.toFixed(6) + ', ' + observation.longitude.toFixed(6) : 'Not captured';
+      ctx.fillText('GPS: ' + gps, margin, 330);
+      let y = 382;
+      if (photo) {
+        const photoWidth = Math.round(photo.naturalWidth * photoScale);
+        ctx.drawImage(photo, (width - photoWidth) / 2, y, photoWidth, photoHeight);
+        y += photoHeight + 54;
+      } else { ctx.fillText('No photo added', margin, y); y += 54; }
+      ctx.fillStyle = '#115e59'; ctx.font = 'bold 28px Arial'; ctx.fillText('Field Notes', margin, y); y += 46;
+      ctx.fillStyle = '#1f2933'; ctx.font = '28px Arial';
+      for (const line of notes) { ctx.fillText(line, margin, y); y += 42; }
+      const footerY = height - 122;
+      ctx.strokeStyle = '#d7ded9'; ctx.beginPath(); ctx.moveTo(margin, footerY - 28); ctx.lineTo(width - margin, footerY - 28); ctx.stroke();
+      ctx.fillStyle = '#4b5563'; ctx.font = '23px Arial';
+      ctx.fillText('Field observation only — not a laboratory analytical result.', margin, footerY);
+      ctx.fillText('hello@ecoteraasia.com  |  ecoteraasia.com', margin, footerY + 44);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Your browser could not create the image. Try the PDF option.');
+      return blob;
+    }
+    async function prepareObservationImage() {
+      const status = document.getElementById('imageStatus'), button = document.getElementById('imageButton');
+      const observation = observationSnapshot();
+      if (!observation) { status.textContent = 'Add a photo, GPS location or notes first.'; return; }
+      resetObservationCard(); const revision = cardRevision;
+      button.disabled = true; status.textContent = 'Creating observation card…';
+      try {
+        const blob = await renderObservationCard(observation);
+        if (revision !== cardRevision) { status.textContent = 'Observation changed. Create the card again with your latest details.'; return; }
+        preparedImage = new File([blob], 'Ecotera_Observation_' + observation.timestamp.replace(/[:.]/g, '-') + '.png', {type: 'image/png'});
+        cardPreviewURL = URL.createObjectURL(preparedImage);
+        const preview = document.getElementById('cardPreview'); preview.src = cardPreviewURL; preview.hidden = false;
+        document.getElementById('downloadImageButton').hidden = false;
+        if (supportsPDFSharing(preparedImage)) {
+          document.getElementById('shareImageButton').hidden = false;
+          status.textContent = 'Card ready. Tap Share Observation to choose an app, or download the image.';
+        } else { downloadObservationImage(); }
+      } catch (e) { status.textContent = 'Could not create the card: ' + e.message; }
+      finally { button.disabled = false; }
+    }
+    function downloadObservationImage() {
+      if (!preparedImage) return;
+      const url = URL.createObjectURL(preparedImage), link = document.createElement('a');
+      link.href = url; link.download = preparedImage.name; document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      document.getElementById('imageStatus').textContent = 'Observation image download started. You can download it again below.';
+    }
+    async function shareObservationImage() {
+      if (!preparedImage) return;
+      if (!supportsPDFSharing(preparedImage)) { downloadObservationImage(); return; }
+      const status = document.getElementById('imageStatus');
+      try {
+        await navigator.share({files: [preparedImage], title: 'Ecotera Asia Field Observation'});
+        status.textContent = 'Observation shared.';
+      } catch (e) {
+        if (e.name === 'AbortError') status.textContent = 'Sharing cancelled. Your card is still ready.';
+        else { downloadObservationImage(); status.textContent = 'Sharing unavailable. Observation image download started.'; }
+      }
+    }
+
+    // Visitors can capture data and generate a PDF without signing in.
+    // saveEntry() still requires login before writing to Supabase.
+  </script>
+</body>
+</html>

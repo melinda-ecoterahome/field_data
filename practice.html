@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoExposure™ | Practice Module</title>
+  <style>
+    :root {--bg:#f6f8f7;--card:#fff;--text:#1f2933;--muted:#6b7280;--border:#d7ded9;--accent:#0f766e;--accent-dark:#115e59;}
+    *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+    header{padding:22px 16px;background:linear-gradient(135deg,#0f766e,#164e63);color:#fff} header h1{margin:0 0 6px;font-size:1.45rem} header p{margin:0;font-size:.95rem;opacity:.9}
+    main{max-width:760px;margin:0 auto;padding:16px} section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+    h2{font-size:1.05rem;margin:0 0 14px} label{display:block;font-size:.88rem;font-weight:600;margin:12px 0 5px}
+    input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:1rem;background:#fff} textarea{min-height:78px;resize:vertical}
+    .info-box{margin-top:10px;padding:10px;background:#eef7f5;border-radius:10px;font-size:.9rem;color:var(--muted)}
+    .image-slot{border:1px dashed var(--border);border-radius:12px;padding:12px;margin-bottom:12px;background:#fbfcfb}.image-slot strong{display:block;margin-bottom:8px}
+    .preview{display:none;margin-top:10px;max-height:180px;max-width:100%;border-radius:10px;border:1px solid var(--border)}
+    button{border:none;border-radius:10px;padding:11px 14px;font-size:.98rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;width:100%;margin-top:10px} button:hover{background:var(--accent-dark)}
+    button.secondary{background:#e5e7eb;color:var(--text)} .top-nav{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}.top-nav a{color:var(--accent);font-weight:700;text-decoration:none}
+    .status{margin-top:10px;color:var(--muted);font-size:.9rem}
+    dialog{border:none;border-radius:16px;padding:0;max-width:520px;width:calc(100% - 24px);box-shadow:0 18px 60px rgba(0,0,0,.28)}
+    dialog::backdrop{background:rgba(15,23,42,.66)}
+    .dialog-inner{padding:16px}.dialog-actions{display:flex;gap:10px}.dialog-actions button{width:auto;flex:1}
+    #qrReader{width:100%;min-height:260px;margin-top:12px}.kit-ok{color:#047857;font-weight:700}.kit-error{color:#b91c1c;font-weight:700}
+    .camera-btn{margin-top:0}.camera-note{font-size:.82rem;color:var(--muted);margin-top:7px}
+    .captured-label{display:none;margin-top:8px;font-size:.86rem;color:#047857;font-weight:700}
+      main{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-around;min-height:80px;padding:10px 4px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid #d7ded9;box-shadow:0 -4px 16px rgba(0,22,41,.04);backdrop-filter:blur(12px)}
+    .bottom-nav a{display:flex;flex:1;min-width:0;min-height:48px;max-width:120px;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 2px;border-radius:24px;color:#6b7280;text-decoration:none;font-size:10px;font-weight:700}
+    .bottom-nav a:hover{color:#0f766e}
+    .bottom-nav a[aria-current="page"]{background:#c7eeea;color:#00504b}
+    .bottom-nav a:focus-visible{outline:3px solid #0f766e;outline-offset:1px}
+    .bottom-nav .material-symbols-outlined{font-size:24px;line-height:1}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>EcoExposure Practice Module</h1>
+    <p><strong>PRACTICE MODE:</strong> Learn the workflow without using a QR code or consuming a real test.</p>
+  </header>
+  <div style="max-width:760px;margin:16px auto 0;padding:0 16px;">
+    <div style="background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;font-weight:700;">
+      PRACTICE MODE — This page does not submit to the real EcoExposure sample database.
+    </div>
+  </div>
+
+  <main>
+    
+
+    <section>
+      <h2>Camera and app practice</h2>
+      <div class="info-box"><strong>No EcoExposure reagent.</strong> Use a little sugar or fine sand in water as a stand-in for camera practice. This is not an assay and produces no EcoExposure reading. Any PRE/POST choices here are only a form exercise.</div>
+      <p><a href="learn.html#photo-guide" style="color:#0f766e;font-weight:700;">Photo tips and when to use the photo box →</a></p>
+      <h2>Practice details</h2>
+
+      <label for="userName">User Name</label>
+      <input id="userName" placeholder="Your name" />
+
+      <label for="location">Location</label>
+      <input id="location" placeholder="Site, city, or notes" />
+
+      <label for="waterType">Water Type</label>
+      <select id="waterType">
+        <option>Tap</option>
+        <option>River</option>
+        <option>Lake</option>
+        <option>Bay</option>
+        <option>Ocean</option>
+        <option>Brackish</option>
+        <option selected>Other</option>
+      </select>
+      <label>Practice Access</label>
+      <div id="qrStatus" class="info-box"><strong>Practice Mode:</strong> No QR code is required and no kit submissions will be used.</div>
+
+      <button type="button" onclick="captureGPS()">Capture GPS Location</button>
+      <div id="gpsStatus" class="info-box">No GPS location captured yet.</div>
+
+      <label for="sampleID">Sample ID</label>
+      <input id="sampleID" placeholder="Example: Kitchen Tap 01" />
+
+      <label>Capture Stage</label>
+
+      <label>
+        <input type="radio" name="captureStage" value="pre_reagent">
+        Pre-Reagent
+      </label>
+
+      <label>
+        <input type="radio" name="captureStage" value="post_reaction">
+        Post-Reaction
+      </label>
+
+      <label>
+        <input type="radio" name="captureStage" value="other">
+        Other
+      </label>
+
+      <label for="notes">Notes</label>
+      <textarea id="notes" placeholder="Sample conditions or visual observations..."></textarea>
+    </section>
+
+    <section>
+      <h2>Images</h2>
+      <div class="info-box">Practice using the same live camera workflow as a real EcoExposure sample. If you see shadows or uneven lighting, pop open the photo box and use it.</div>
+
+      <div class="image-slot">
+        <strong>Top View - White Background</strong>
+        <button class="camera-btn" type="button" onclick="openPhotoCamera('topImage','topPreview','Top View - White Background')">📷 Take Photo</button>
+        <div id="topImageCaptured" class="captured-label">✓ Photo captured</div>
+        <img id="topPreview" class="preview" alt="Top view preview" />
+      </div>
+
+      <div class="image-slot">
+        <strong>Top View – Grid Background</strong>
+        <button class="camera-btn" type="button" onclick="openPhotoCamera('topGridImage','topGridPreview','Top View – Grid Background')">📷 Take Photo</button>
+        <div id="topGridImageCaptured" class="captured-label">✓ Photo captured</div>
+        <img id="topGridPreview" class="preview" alt="Top grid preview" />
+      </div>
+
+      <div class="image-slot">
+        <strong>Side View</strong>
+        <button class="camera-btn" type="button" onclick="openPhotoCamera('sideImage','sidePreview','Side View')">📷 Take Photo</button>
+        <div id="sideImageCaptured" class="captured-label">✓ Photo captured</div>
+        <img id="sidePreview" class="preview" alt="Side view preview" />
+      </div>
+
+      <div class="image-slot">
+        <strong>Close-Up</strong>
+        <button class="camera-btn" type="button" onclick="openPhotoCamera('closeUpImage','closeUpPreview','Close-Up')">📷 Take Photo</button>
+        <div id="closeUpImageCaptured" class="captured-label">✓ Photo captured</div>
+        <img id="closeUpPreview" class="preview" alt="Close-up preview" />
+      </div>
+
+      <div class="image-slot">
+        <strong>Other</strong>
+        <button class="camera-btn" type="button" onclick="openPhotoCamera('otherImage','otherPreview','Other')">📷 Take Photo</button>
+        <div id="otherImageCaptured" class="captured-label">✓ Photo captured</div>
+        <img id="otherPreview" class="preview" alt="Other preview" />
+      </div>
+    </section>
+
+    <section>
+      <h2>Complete Practice</h2>
+      <button type="button" onclick="completePractice()">Complete Practice</button>
+      <button class="secondary" type="button" onclick="clearDraft()">Clear Current Draft</button>
+      <div id="saveStatus" class="status">Practice not completed yet.</div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="index.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg><span>Home</span></a>
+    <a href="new-sample.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Sample</span></a>
+    <a href="my-data.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6H2v16h16v-2"/><rect x="6" y="2" width="16" height="16" rx="1"/><circle cx="16" cy="7" r="1"/><path d="m8 15 4-5 3 3 2-2 3 4"/></svg><span>My Data</span></a>
+    <a href="new_field_data.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12M3 9h10M3 13h7m3 4 6-6 3 3-6 6-4 1z"/></svg><span>Field</span></a>
+    <a href="practice.html" aria-current="page"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6m-5 0v7l-6 9q-1 2 2 2h12q3 0 2-2l-6-9V3M8 15h8"/></svg><span>Practice</span></a>
+    <a href="learn.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 2 4 2 2 3v16c3-1 7-1 10 2 3-3 7-3 10-2V3c-2-1-7-1-10 2zM5 7h4M5 11h4M15 7h4M15 11h4"/></svg><span>Learn</span></a>
+  </nav>
+
+
+  <dialog id="photoDialog">
+    <div class="dialog-inner">
+      <h2 id="photoDialogTitle">Take Photo</h2>
+      <video id="photoCameraPreview" autoplay playsinline muted style="width:100%;max-height:65vh;background:#000;border-radius:12px;"></video>
+      <div id="photoCameraStatus" class="status">Opening camera...</div>
+      <div class="dialog-actions">
+        <button type="button" onclick="takeLivePhoto()">Take Photo</button>
+        <button type="button" class="secondary" onclick="closePhotoCamera()">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+	const SUPABASE_URL = "https://qvmgrchkmmezpwhlfxjv.supabase.co";
+	const SUPABASE_KEY = "sb_publishable_3M-2qrVCnjO9XfjsBCUf6g_l1wSuwVu";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    let latitude = null,
+        longitude = null,
+        currentUser = null,
+        photoStream = null,
+        activePhotoSlot = null,
+        activePhotoPreview = null;
+
+    const capturedPhotos = {};
+
+    const imageSlots = {
+      topImage: "top",
+      topGridImage: "top_grid",
+      sideImage: "side",
+      closeUpImage: "closeup",
+      otherImage: "other"
+    };
+
+    async function requireLogin() {
+      const { data, error } = await supabaseClient.auth.getUser();
+
+      if (error || !data.user) {
+        window.location.replace("login.html");
+        return;
+      }
+
+      currentUser = data.user;
+    }
+
+    function captureGPS() {
+      const box =
+        document.getElementById("gpsStatus");
+
+      if (!navigator.geolocation) {
+        box.textContent =
+          "GPS is not supported in this browser.";
+        return;
+      }
+
+      box.textContent =
+        "Requesting GPS location...";
+
+      navigator.geolocation.getCurrentPosition(
+        p => {
+          latitude = p.coords.latitude;
+          longitude = p.coords.longitude;
+
+          box.textContent =
+            `Location captured: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+        },
+
+        e => {
+          box.textContent =
+            `GPS error: ${e.message}`;
+        },
+
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    async function openPhotoCamera(slotID, previewID, title) {
+      activePhotoSlot = slotID;
+      activePhotoPreview = previewID;
+
+      const dialog = document.getElementById("photoDialog");
+      const video = document.getElementById("photoCameraPreview");
+      const status = document.getElementById("photoCameraStatus");
+
+      document.getElementById("photoDialogTitle").textContent = title;
+      status.textContent = "Opening camera...";
+      dialog.showModal();
+
+      try {
+        photoStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
+          audio: false
+        });
+
+        video.srcObject = photoStream;
+        await video.play();
+        status.textContent = "Position the sample, then tap Take Photo.";
+      } catch (e) {
+        console.error("Photo camera error:", e);
+        status.textContent =
+          "Camera unavailable. Please allow camera access in your browser settings.";
+      }
+    }
+
+    function stopPhotoStream() {
+      if (photoStream) {
+        photoStream.getTracks().forEach(track => track.stop());
+        photoStream = null;
+      }
+
+      const video = document.getElementById("photoCameraPreview");
+      video.srcObject = null;
+    }
+
+    function closePhotoCamera() {
+      stopPhotoStream();
+
+      const dialog = document.getElementById("photoDialog");
+      if (dialog.open) dialog.close();
+
+      activePhotoSlot = null;
+      activePhotoPreview = null;
+    }
+
+    async function takeLivePhoto() {
+      const video = document.getElementById("photoCameraPreview");
+      const status = document.getElementById("photoCameraStatus");
+
+      if (!photoStream || !video.videoWidth || !video.videoHeight) {
+        status.textContent = "Camera is not ready yet.";
+        return;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const blob = await new Promise(resolve => {
+        canvas.toBlob(resolve, "image/jpeg", 0.92);
+      });
+
+      if (!blob) {
+        status.textContent = "Photo capture failed. Please try again.";
+        return;
+      }
+
+      capturedPhotos[activePhotoSlot] = blob;
+
+      const preview = document.getElementById(activePhotoPreview);
+      if (preview.dataset.objectUrl) {
+        URL.revokeObjectURL(preview.dataset.objectUrl);
+      }
+
+      const objectUrl = URL.createObjectURL(blob);
+      preview.src = objectUrl;
+      preview.dataset.objectUrl = objectUrl;
+      preview.style.display = "block";
+
+      const capturedLabel = document.getElementById(activePhotoSlot + "Captured");
+      if (capturedLabel) capturedLabel.style.display = "block";
+
+      stopPhotoStream();
+      document.getElementById("photoDialog").close();
+
+      activePhotoSlot = null;
+      activePhotoPreview = null;
+    }
+
+    async function compressImage(blob, baseName) {
+      const bitmap = await createImageBitmap(blob);
+      const MAX_DIMENSION = 1400;
+
+      const scale = Math.min(
+        1,
+        MAX_DIMENSION / Math.max(bitmap.width, bitmap.height)
+      );
+
+      const width = Math.round(bitmap.width * scale);
+      const height = Math.round(bitmap.height * scale);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(bitmap, 0, 0, width, height);
+
+      const compressedBlob = await new Promise(resolve => {
+        canvas.toBlob(resolve, "image/webp", 0.72);
+      });
+
+      bitmap.close();
+
+      if (!compressedBlob) {
+        throw new Error("Image compression failed.");
+      }
+
+      return new File(
+        [compressedBlob],
+        `${baseName}.webp`,
+        { type: "image/webp" }
+      );
+    }
+
+    function sanitizeForFilename(input) {
+      return String(input || "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[\\/:,]/g, "-")
+        .replace(/[^a-zA-Z0-9._-]/g, "");
+    }
+
+    function timestampString() {
+      const d = new Date();
+
+      const p =
+        v => String(v).padStart(2, "0");
+
+      return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}`;
+    }
+
+    function filenameFor(slot, file) {
+      const u =
+        sanitizeForFilename(
+          document.getElementById("userName").value ||
+          "UnknownUser"
+        );
+
+      const w =
+        sanitizeForFilename(
+          document.getElementById("waterType").value ||
+          "Other"
+        );
+
+      const s =
+        sanitizeForFilename(
+          document.getElementById("sampleID").value ||
+          "UnknownSample"
+        );
+
+      const ext =
+        (file.name.split(".").pop() || "jpg").toLowerCase();
+
+      return `EcoExposure_${slot}_${u}_${w}_${s}_${timestampString()}.${ext}`;
+    }
+
+    async function uploadOneImage(slotID, slot) {
+      const originalBlob = capturedPhotos[slotID] || null;
+
+      if (!originalBlob) {
+        return null;
+      }
+
+      const file = await compressImage(
+        originalBlob,
+        `EcoExposure_${slot}_${timestampString()}`
+      );
+
+      const path =
+        `${currentUser.id}/${filenameFor(slot,file)}`;
+
+      const { error } =
+        await supabaseClient.storage
+          .from(STORAGE_BUCKET)
+          .upload(
+            path,
+            file,
+            {
+              cacheControl: "3600",
+              upsert: false
+            }
+          );
+
+      if (error) {
+        throw new Error(
+          `${slot} image upload failed: ${error.message}`
+        );
+      }
+
+      return path;
+    }
+
+    async function completePractice() {
+      const status = document.getElementById("saveStatus");
+
+      if (!currentUser) {
+        await requireLogin();
+      }
+      if (!currentUser) return;
+
+      const userName = document.getElementById("userName").value.trim();
+      const sampleID = document.getElementById("sampleID").value.trim();
+      const captureStage =
+        document.querySelector('input[name="captureStage"]:checked')?.value || "";
+      const hasImage =
+        Object.keys(imageSlots).some(id => Boolean(capturedPhotos[id]));
+
+      if (!userName || !sampleID || !captureStage || !hasImage) {
+        status.textContent =
+          "Practice requires: User Name, Sample ID, Capture Stage, and at least one image.";
+        return;
+      }
+
+      status.textContent =
+        "✅ Practice complete. No QR code was used, no kit submission was consumed, and no practice data was saved to the scientific dataset.";
+    }
+
+    function clearDraft(updateStatus = true) {
+      [
+        "userName",
+        "location",
+        "sampleID",
+        "notes"
+      ].forEach(
+        id =>
+          document.getElementById(id).value = ""
+      );
+
+      document.getElementById("waterType").value =
+        "Other";
+
+      Object.entries({
+        topImage: "topPreview",
+        topGridImage: "topGridPreview",
+        sideImage: "sidePreview",
+        closeUpImage: "closeUpPreview",
+        otherImage: "otherPreview"
+      }).forEach(([i,p]) => {
+        delete capturedPhotos[i];
+
+        const pr = document.getElementById(p);
+        if (pr.dataset.objectUrl) {
+          URL.revokeObjectURL(pr.dataset.objectUrl);
+          delete pr.dataset.objectUrl;
+        }
+
+        pr.style.display = "none";
+        pr.removeAttribute("src");
+
+        const capturedLabel = document.getElementById(i + "Captured");
+        if (capturedLabel) capturedLabel.style.display = "none";
+      });
+
+      latitude = null;
+      longitude = null;
+
+      document.getElementById("gpsStatus").textContent =
+        "No GPS location captured yet.";
+
+      document.getElementById("qrStatus").innerHTML =
+        "<strong>Practice Mode:</strong> No QR code is required and no kit submissions will be used.";
+
+      if (updateStatus) {
+        document.getElementById("saveStatus").textContent =
+          "Practice cleared.";
+      }
+    }
+
+    requireLogin();
+  </script>
+</body>
+</html>

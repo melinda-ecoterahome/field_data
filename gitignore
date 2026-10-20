@@ -1,0 +1,7 @@
+# Local environment/configuration files
+.env
+.env.*
+!.env.example
+
+# Python environment, if ever used
+.venv/

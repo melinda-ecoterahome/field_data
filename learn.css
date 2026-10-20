@@ -1,0 +1,13 @@
+.learn-page {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.instruction-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}

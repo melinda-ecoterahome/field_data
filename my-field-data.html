@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoExposure™ | My Field Data</title>
+<style>
+:root{--bg:#f6f8f7;--card:#fff;--text:#1f2933;--muted:#6b7280;--border:#d7ded9;--accent:#0f766e}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+header{padding:22px 16px;background:linear-gradient(135deg,#0f766e,#164e63);color:white}header h1{margin:0 0 6px;font-size:1.45rem}header p{margin:0;opacity:.9}
+main{max-width:900px;margin:auto;padding:16px}.top-nav{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}.top-nav a{color:var(--accent);font-weight:700;text-decoration:none}
+.status,.empty{background:#eef7f5;border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--muted);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.photo{min-height:180px;background:#eef2f1;display:flex;align-items:center;justify-content:center}.photo img{width:100%;max-height:320px;object-fit:cover}.no-photo{color:var(--muted);padding:28px}
+.content{padding:14px}.meta{font-size:.84rem;color:var(--muted);line-height:1.5;margin-bottom:10px}.notes{white-space:pre-wrap;line-height:1.5}
+    main{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-around;min-height:80px;padding:10px 4px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid #d7ded9;box-shadow:0 -4px 16px rgba(0,22,41,.04);backdrop-filter:blur(12px)}
+    .bottom-nav a{display:flex;flex:1;min-width:0;min-height:48px;max-width:120px;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 2px;border-radius:24px;color:#6b7280;text-decoration:none;font-size:10px;font-weight:700}
+    .bottom-nav a:hover{color:#0f766e}
+    .bottom-nav a[aria-current="page"]{background:#c7eeea;color:#00504b}
+    .bottom-nav a:focus-visible{outline:3px solid #0f766e;outline-offset:1px}
+    .bottom-nav .material-symbols-outlined{font-size:24px;line-height:1}
+  </style>
+</head>
+<body>
+<header><h1>My Field Data</h1><p>Your saved field photos, locations, and notes.</p></header>
+<main>
+
+<div id="status" class="status">Loading your Field Data...</div>
+<div id="entries" class="grid"></div>
+</main>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="index.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg><span>Home</span></a>
+    <a href="new-sample.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Sample</span></a>
+    <a href="my-data.html" aria-current="page"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6H2v16h16v-2"/><rect x="6" y="2" width="16" height="16" rx="1"/><circle cx="16" cy="7" r="1"/><path d="m8 15 4-5 3 3 2-2 3 4"/></svg><span>My Data</span></a>
+    <a href="new_field_data.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12M3 9h10M3 13h7m3 4 6-6 3 3-6 6-4 1z"/></svg><span>Field</span></a>
+    <a href="practice.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6m-5 0v7l-6 9q-1 2 2 2h12q3 0 2-2l-6-9V3M8 15h8"/></svg><span>Practice</span></a>
+    <a href="learn.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 2 4 2 2 3v16c3-1 7-1 10 2 3-3 7-3 10-2V3c-2-1-7-1-10 2zM5 7h4M5 11h4M15 7h4M15 11h4"/></svg><span>Learn</span></a>
+  </nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://qvmgrchkmmezpwhlfxjv.supabase.co";
+const SUPABASE_KEY="sb_publishable_3M-2qrVCnjO9XfjsBCUf6g_l1wSuwVu";
+const OTHER_DATA_BUCKET="field-data";
+const OTHER_DATA_TABLE="field_data";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentUser=null;
+
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function fmt(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
+
+async function requireLogin(){
+  const {data,error}=await supabaseClient.auth.getUser();
+  if(error||!data.user){window.location.replace("login.html");return false}
+  currentUser=data.user;return true
+}
+
+async function signedUrl(path){
+  if(!path)return null;
+  const {data,error}=await supabaseClient.storage.from(OTHER_DATA_BUCKET).createSignedUrl(path,3600);
+  if(error){console.warn(error);return null}
+  return data?.signedUrl||null
+}
+
+async function load(){
+  const status=document.getElementById("status"),box=document.getElementById("entries");
+  if(!await requireLogin())return;
+  const {data,error}=await supabaseClient.from(OTHER_DATA_TABLE)
+    .select("id,user_id,file_path,notes,latitude,longitude,created_at")
+    .eq("user_id",currentUser.id).order("created_at",{ascending:false});
+  if(error){status.textContent="Could not load Field Data: "+error.message;return}
+  if(!data||!data.length){status.style.display="none";box.innerHTML='<div class="empty">No Field Data saved yet.</div>';return}
+  status.textContent=data.length+" saved entr"+(data.length===1?"y":"ies");
+  for(const row of data){
+    const url=await signedUrl(row.file_path);
+    const gps=(row.latitude!=null&&row.longitude!=null)?Number(row.latitude).toFixed(5)+", "+Number(row.longitude).toFixed(5):"";
+    const card=document.createElement("article");card.className="card";
+    card.innerHTML=`<div class="photo">${url?`<img src="${esc(url)}" alt="Field Data photo">`:'<div class="no-photo">No photo</div>'}</div>
+      <div class="content"><div class="meta">${row.created_at?`<div><strong>Saved:</strong> ${esc(fmt(row.created_at))}</div>`:""}${gps?`<div><strong>GPS:</strong> ${esc(gps)}</div>`:""}</div>
+      <div class="notes">${row.notes?esc(row.notes):'<span style="color:#6b7280">No notes</span>'}</div></div>`;
+    box.appendChild(card);
+  }
+}
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EcoExposure | Learn</title>
+<style>
+:root{--accent:#0f766e;--muted:#586772;--border:#d7ded9;--text:#1f2933}
+*{box-sizing:border-box}body{margin:0;background:#f6f8f7;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:28px 20px;background:linear-gradient(135deg,#0f766e,#164e63);color:white}header>div{max-width:900px;margin:auto}h1{margin:0 0 8px;font-size:1.8rem}header p{margin:0;line-height:1.6}
+main{max-width:940px;margin:auto;padding:24px 20px}h2{font-size:1.25rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p,li{line-height:1.65}p{margin:0 0 14px}a{color:var(--accent)}
+section{margin-bottom:24px}.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px}.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.choices .card{display:flex;flex-direction:column}.choices p{flex:1}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent);margin-bottom:8px}
+.action{display:inline-block;padding:12px 16px;background:#0f766e;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;text-align:center;min-height:44px}.action:hover{background:#115e59}.action.secondary{background:#e4f4f2;color:#115e59}
+.jump-links{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.jump-links a{padding:10px 12px;background:#e4f4f2;border-radius:9px;font-size:14px;font-weight:600;text-decoration:none}
+.steps{padding-left:24px;margin-bottom:0}.steps li{padding-left:6px;margin-bottom:15px}.stages{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.stage{border:1px solid var(--border);border-radius:12px;overflow:hidden}.stage h3{padding:12px 16px;color:#fff;background:#0f766e}.stage.post h3{background:#087d9d}.stage p{padding:0 16px;margin:12px 0}
+.note{padding:14px 16px;background:#eef7f5;border-left:4px solid #0f766e;border-radius:6px;margin:16px 0 0}.tips{padding-left:22px;margin-bottom:0}.tips li{margin-bottom:8px}
+details{border-top:1px solid var(--border);padding:14px 0}details:last-child{padding-bottom:0}summary{cursor:pointer;font-weight:700;line-height:1.5;padding:4px 0}details p{margin:12px 0 0}a:focus-visible,summary:focus-visible{outline:3px solid #0f766e;outline-offset:3px}section[id]{scroll-margin-top:20px}
+@media(max-width:640px){.choices{grid-template-columns:1fr}.stages{grid-template-columns:1fr}.card{padding:18px}main{padding:18px 14px}.choices .action{align-self:flex-start}}
+    main{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-around;min-height:80px;padding:10px 4px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid var(--border);box-shadow:0 -4px 16px rgba(0,22,41,.04);backdrop-filter:blur(12px)}
+    .bottom-nav a{display:flex;flex:1;min-width:0;min-height:48px;max-width:120px;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 2px;border-radius:24px;color:var(--muted);text-decoration:none;font-size:10px;font-weight:700}
+    .bottom-nav a:hover{color:var(--accent)}
+    .bottom-nav a[aria-current="page"]{background:#c7eeea;color:#00504b}
+    .bottom-nav a:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+    .bottom-nav .material-symbols-outlined{font-size:24px;line-height:1}
+
+    .assay-warning{margin:16px 0;padding:16px 18px;background:#fff4e5;border:2px solid #b55c08;border-radius:12px;color:#613000;line-height:1.55}
+    .assay-warning>strong{display:block;font-size:1.05rem;letter-spacing:.02em}
+    .assay-warning p{margin:8px 0 0;line-height:1.55}
+    .context-help{display:inline-block;font-size:.85rem;font-weight:600;color:#0f766e;margin:4px 0 8px}
+
+    .field-checklist{display:grid;gap:8px;margin:14px 0}.field-checklist label{display:flex;align-items:flex-start;gap:12px;padding:12px;background:#f6f8f7;border-radius:9px;line-height:1.5;cursor:pointer}.field-checklist input{flex:0 0 20px;width:20px;height:20px;margin:2px 0 0;accent-color:#0f766e}.field-checklist label:has(input:checked){background:#e4f4f2}
+    .run-steps{display:grid;gap:14px}.run-step{border:1px solid var(--border);padding:16px;border-radius:12px}.run-step h3{color:#0f766e}.run-step p:last-child{margin-bottom:0}
+    </style>
+</head>
+<body>
+<header><div><h1>Learn with EcoExposure</h1><p>A little guidance for your next sample, field observation, or photo.</p></div></header>
+<main>
+<section aria-labelledby="start-title"><h2 id="start-title">What would you like to do?</h2>
+<div class="choices">
+<article class="card"><div class="eyebrow">WITH A KIT</div><h3>Collect a sample</h3><p>Use your PRE and POST codes to record your EcoExposure sample and photos.</p><a class="action" href="#run-test">Run your first test</a></article>
+<article class="card"><div class="eyebrow">NO KIT NEEDED</div><h3>Record field data</h3><p>Add a field photo, notes, and optional GPS coordinates to document what you observe.</p><a class="action" href="new_field_data.html">Add field data</a></article>
+<article class="card"><div class="eyebrow">TRY IT FIRST</div><h3>Practice the process</h3><p>Practice the camera and form with a little sugar or fine sand in water. Do not use EcoExposure reagent; this does not produce an assay result.</p><a class="action secondary" href="practice.html">Open Practice</a></article>
+</div>
+<div class="jump-links" aria-label="Guide sections"><a href="#kit-contents">Kit contents</a><a href="#run-test">How to run a test</a><a href="#zero-shear">Why no mixing?</a><a href="#surface-clumps">Surface clumps</a><a href="#z-model">Z-model</a><a href="#photo-guide">Photo quality</a><a href="#field-checklist">Field checklist</a><a href="#sample-guide">Using the app</a><a href="#field-guide">Field data</a><a href="#help">Common questions</a></div>
+</section>
+<section class="card" id="kit-contents"><h2>What is in your kit?</h2>
+<figure style="margin:16px 0;">
+<a href="images/ecoexposure-kit-contents-guide.png" target="_blank" rel="noopener" aria-label="Enlarge the kit contents guide (opens in a new tab)"><img src="images/ecoexposure-kit-contents-guide.png" alt="Line drawings of the folded photo box, bag with reagent packets, 500 mL glass beaker, multi-pattern background, wooden stick, instructions, and PRE/POST QR code cards." loading="lazy" style="display:block;width:100%;height:auto;border:1px solid #d7ded9;border-radius:12px;"></a>
+<figcaption style="margin-top:10px;"><a href="images/ecoexposure-kit-contents-guide.png" target="_blank" rel="noopener">Open the full-size contents guide</a>.</figcaption>
+</figure>
+<ul class="tips"><li><strong>Folded cardboard photo box:</strong> pop it open for photos when shadows or uneven lighting interfere.</li><li><strong>Bag with reagent packets:</strong> follow the kit instructions for reagent handling and timing.</li><li><strong>500 mL glass beaker:</strong> use exactly <strong>400 mL of liquid</strong>. The optical analysis is based on this beaker size and liquid volume.</li><li><strong>Multi-pattern background:</strong> use the background specified for each photo view.</li><li><strong>Wooden stick:</strong> gently poke persistent powder clumps at the surface only. <strong>Do not stir, swirl, or mix the liquid.</strong></li><li><strong>Instructions:</strong> keep them nearby as you work.</li><li><strong>QR code cards:</strong> use the matching PRE and POST codes supplied with your kit. The codes in the drawing are illustrations only.</li></ul>
+</section>
+<section class="card" id="run-test"><div class="eyebrow">START HERE</div><h2>Collect → Add reagent and wait → Photograph</h2>
+<p>Have your kit instructions and PRE/POST code sheet ready. <strong>Use a 500 mL glass beaker with 400 mL of liquid</strong>; the optical analysis is based on this setup. Follow your kit instructions for the reagent amount and wait time.</p>
+<aside class="assay-warning" aria-label="Important assay instruction"><strong>DO NOT STIR, SWIRL, OR MIX</strong><p>Zero-shear matters: mixing disrupts the assay. If powder clumps remain at the surface, gently poke only those surface clumps. Do not stir or mix the liquid.</p></aside>
+<div class="run-steps">
+<article class="run-step"><h3>1. Collect and record PRE</h3><p>Collect the water using your kit instructions. Note its source and water type. Before adding reagent, use the PRE code and Pre-Reagent stage to capture and save your baseline photos.</p></article>
+<article class="run-step"><h3>2. Add reagent and wait — do not mix</h3><p>Add the reagent as directed by your kit instructions, then leave the sample undisturbed for the specified wait time. <strong>Do not stir, swirl, or mix.</strong></p><p>If powder clumps are still at the surface, gently poke only the surface clumps. This is not permission to mix the sample.</p></article>
+<article class="run-step"><h3>3. Photograph and record POST</h3><p>After the required wait, use the POST code and Post-Reaction stage. Take the labeled views and review the previews before saving. If shadows or uneven light interfere, <strong>pop open the photo box</strong> and use it for the photos.</p><p>Use the same sample label for the matching PRE and POST observations. <a href="#sample-guide">See the app steps</a>.</p></article>
+</div></section>
+<section class="card" id="zero-shear"><h2>Why zero-shear matters</h2><figure style="margin:16px 0;"><a href="images/ecoexposure-zero-shear-guide.png" target="_blank" rel="noopener" aria-label="Open full-size why zero-shear matters guide (opens in a new tab)"><img src="images/ecoexposure-zero-shear-guide.png" alt="Conceptual comparison of natural reagent contact with plastics and extra contacts caused by stirring." loading="lazy" style="display:block;width:100%;height:auto;border:1px solid #d7ded9;border-radius:12px;"></a><figcaption style="margin-top:10px;"><a href="images/ecoexposure-zero-shear-guide.png" target="_blank" rel="noopener">Open the full-size guide</a></figcaption></figure><p>Leave the sample undisturbed so the reagent can naturally come into contact with plastics. Stirring adds shear forces and can create extra contacts that would not otherwise occur, potentially making the estimated concentration artificially high.</p><p><strong>Do not stir, swirl, or mix.</strong> If powder clumps remain at the surface, <a href="#surface-clumps">gently poke only those clumps</a>.</p></section>
+<section class="card" id="surface-clumps"><h2>Gently poke surface clumps</h2><figure style="margin:16px 0;"><a href="images/poke-clumps.png" target="_blank" rel="noopener" aria-label="Open full-size gently poke surface clumps guide (opens in a new tab)"><img src="images/poke-clumps.png" alt="Three steps: spot a floating powder clump, gently touch it with the wooden stick at the surface, and lift the stick away." loading="lazy" style="display:block;width:100%;height:auto;border:1px solid #d7ded9;border-radius:12px;"></a><figcaption style="margin-top:10px;"><a href="images/poke-clumps.png" target="_blank" rel="noopener">Open the full-size guide</a></figcaption></figure><ol class="steps"><li><strong>Spot a surface clump.</strong> Only intervene if powder clumps remain at the surface.</li><li><strong>Touch the clump gently.</strong> Use the wooden stick to gently poke the clump and help it break through surface tension.</li><li><strong>Lift the stick away.</strong> Then leave the sample undisturbed.</li></ol><p class="note"><strong>Do not stir, swirl, or mix.</strong> Touch only the surface clump. Do not sweep the stick through the liquid.</p></section>
+<section class="card" id="z-model"><h2>The Z-model: interaction surface area</h2><figure style="margin:16px 0;"><a href="images/z-model.png" target="_blank" rel="noopener" aria-label="Open full-size the z-model: interaction surface area guide (opens in a new tab)"><img src="images/z-model.png" alt="Conceptual Z-model illustration showing an irregular particle represented by an equivalent sphere with interaction surface area and contact sites." loading="lazy" style="display:block;width:100%;height:auto;border:1px solid #d7ded9;border-radius:12px;"></a><figcaption style="margin-top:10px;"><a href="images/z-model.png" target="_blank" rel="noopener">Open the full-size guide</a></figcaption></figure><p>The Z-model focuses on the surface available for interaction. It represents irregular particles using equivalent interaction surface area and contact-site distribution, where reagent and plastic can interact.</p><p>The sphere is a model representation of an irregular particle. These illustrations are conceptual and not to scale.</p></section>
+<section class="card" id="sample-guide"><h2>From kit to saved sample</h2>
+<p>Keep your kit instructions nearby. This guide explains the app; use the instructions supplied with your kit for sample preparation, reagent handling, and reaction timing.</p>
+<div class="stages"><div class="stage"><h3>PRE · Before reagent</h3><p>Use the PRE QR code and select Pre-Reagent in the sample form.</p></div><div class="stage post"><h3>POST · After reaction</h3><p>Use the POST QR code and select Post-Reaction in the sample form.</p></div></div>
+<ol class="steps">
+<li><strong>Log in and verify a code.</strong> Open Sample, tap Scan Kit QR Code, and scan the correct code inside the app. You can enter the printed manual access code instead. Wait for the verified message.</li>
+<li><strong>Describe the sample.</strong> Enter your name and a meaningful sample label, such as Kitchen Tap 01. Add a location, water type, and notes. Use the same label when recording PRE and POST for the same observation.</li>
+<li><strong>Add GPS if useful.</strong> Tap Capture GPS Location and allow location access. Check the coordinates appear; you can also describe the location in words.</li>
+<li><strong>Select the stage and take photos.</strong> Match PRE or POST to your code. Use the camera buttons for the labeled views. At least one photo is required to save.</li>
+<li><strong>Save, then review.</strong> Tap Save Sample and wait for the success message. Open My Data to check your record and photos. Review what was saved before repeating a submission.</li>
+</ol>
+<p class="note">Each successful save uses one submission from the selected QR code. PRE and POST have separate counters; the verified-kit message shows what remains. Your printed sheet shows the starting allowance.</p>
+</section>
+<section class="card" id="photo-guide"><h2>Make your photos useful</h2>
+<figure style="margin:16px 0 22px;">
+  <a href="images/photobox-instructions.png" target="_blank" rel="noopener" aria-label="Enlarge the photo-box instruction graphic (opens in a new tab)"><img src="images/photobox-instructions.png" alt="Photo box: expand the folded box, place it around the beaker on a stable surface, then position the phone above the top opening to take a photo." loading="lazy" style="display:block;width:100%;height:auto;border:1px solid #d7ded9;border-radius:12px;" /></a>
+  <figcaption style="font-size:14px;line-height:1.6;margin-top:10px;">No assembly required: pop open, place around the beaker, and photograph from above. <a href="images/photobox-instructions.png" target="_blank" rel="noopener">Open the full-size guide</a>.</figcaption>
+</figure>
+<ul class="tips">
+<li><strong>Shadows or uneven lighting? Pop open the photo box and use it.</strong> Recheck the preview for glare and bright spots before capturing.</li><li>Use even lighting and avoid a bright light behind the sample. Improve the lighting or camera position without stirring or mixing the liquid.</li>
+<li>Hold the phone steady and check the preview for sharp focus before saving. For top views, keep the phone parallel to the liquid surface; use the side angle only for the labeled side view.</li>
+<li>Follow the view labels: top on white background, top on grid background, side, close-up, or other.</li>
+<li>Keep the framing and lighting as consistent as possible between PRE and POST photos.</li>
+<li>For New Sample, take photos live in the app. Field Data also lets you choose an existing photo.</li>
+</ul><p style="margin-top:16px;"><a href="practice.html">Practice taking photos without using kit reagent →</a></p></section>
+<section class="card" id="field-checklist"><h2>Before you save</h2><p>Use this checklist while you work. These checkboxes are reminders only; they do not verify or save anything in the app and reset when the page reloads.</p>
+<div class="field-checklist">
+<label><input type="checkbox" id="field-check-0"><span>Correct kit code verified: PRE or POST</span></label>
+<label><input type="checkbox" id="field-check-1"><span>Name, sample label, and water type entered</span></label>
+<label><input type="checkbox" id="field-check-2"><span>Location noted; GPS captured if available</span></label>
+<label><input type="checkbox" id="field-check-3"><span>No stirring, swirling, or mixing</span></label>
+<label><input type="checkbox" id="field-check-4"><span>For POST: kit-specified wait time complete</span></label>
+<label><input type="checkbox" id="field-check-5"><span>Photo clear and evenly lit; photo box used if needed</span></label>
+<label><input type="checkbox" id="field-check-6"><span>After saving: success message seen and record checked in My Data</span></label>
+</div><a class="action" href="new-sample.html">Open Sample</a></section>
+<section class="card" id="field-guide"><h2>Record an observation without a kit</h2><p>Open Field to document your surroundings or something you want to record. Add a photo, a note, or both. You can include GPS coordinates, then tap Save Field Data.</p><p>A useful note describes what you observed, where it was, and any conditions that give the photo context. Record observations separately from guesses about their cause.</p><p>Field Data does not need a QR code and does not use a kit submission. Find saved entries in My Data, or open My Field Data from there.</p><a class="action secondary" href="my-data.html">Review My Data</a></section>
+<section class="card" id="help"><h2>Common questions</h2>
+<details><summary>Powder clumps are still at the surface. Should I mix them in?</summary><p>No. Gently poke only the remaining surface clumps. Do not stir, swirl, or mix the liquid: zero-shear is important to the assay.</p></details>
+<details><summary>I stirred or mixed the sample. What now?</summary><p>Mixing disrupts the assay. Record what happened and check with your project lead before treating that run as a valid result; do not assume waiting longer reverses it.</p></details>
+<details><summary>My photo has shadows or uneven lighting.</summary><p>Pop open the photo box and use it. Check the preview and adjust the lighting or camera position until the sample is clearly visible without glare.</p></details>
+<details><summary>My QR code will not scan. What can I do?</summary><p>Scan using the button inside New Sample. Keep the full square visible, improve the lighting, and try a different distance. You can also type the manual access code printed beneath the QR. Make sure you are using the new Asia sheet in the Asia app.</p></details>
+<details><summary>Why does it say “Kit not verified”?</summary><p>Open the scanner window and read the detailed message. A code may be unrecognized or the lookup may have failed. If the issue continues, keep the exact error message so your project lead can investigate.</p></details>
+<details><summary>What if a code has no submissions remaining?</summary><p>That code cannot accept more saves. Use another active code for the same stage, following your project lead's instructions. Switching PRE and POST is not a substitute for an available code.</p></details>
+<details><summary>Does Practice save my sample?</summary><p>No. Practice rehearses the sample workflow but does not store a scientific sample or use a kit submission. Use Sample or Field when you want to save real observations.</p></details>
+<details><summary>The camera or GPS will not open.</summary><p>Use the live HTTPS app and allow camera or location access in your browser. If you previously blocked access, update the permission for this site and try again.</p></details>
+<details><summary>Does a saved photo mean my sample has been analyzed?</summary><p>No. A successful save confirms the record and photos were submitted. It does not by itself provide an analysis result or determine whether water is safe to drink.</p></details>
+</section>
+</main>
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="index.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg><span>Home</span></a>
+    <a href="new-sample.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Sample</span></a>
+    <a href="my-data.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6H2v16h16v-2"/><rect x="6" y="2" width="16" height="16" rx="1"/><circle cx="16" cy="7" r="1"/><path d="m8 15 4-5 3 3 2-2 3 4"/></svg><span>My Data</span></a>
+    <a href="new_field_data.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12M3 9h10M3 13h7m3 4 6-6 3 3-6 6-4 1z"/></svg><span>Field</span></a>
+    <a href="practice.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6m-5 0v7l-6 9q-1 2 2 2h12q3 0 2-2l-6-9V3M8 15h8"/></svg><span>Practice</span></a>
+    <a href="learn.html" aria-current="page"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 2 4 2 2 3v16c3-1 7-1 10 2 3-3 7-3 10-2V3c-2-1-7-1-10 2zM5 7h4M5 11h4M15 7h4M15 11h4"/></svg><span>Learn</span></a>
+  </nav>
+</body></html>

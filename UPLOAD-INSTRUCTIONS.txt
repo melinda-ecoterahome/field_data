@@ -1,0 +1,1 @@
+Replace root new-sample.html and add images/demo/sample-comparison.png. This is the simplified demo version: no kit verification, login redirect, camera use or database saves. GPS and form fields remain. All photo buttons open the supplied comparison. Other pages, including the Field Data PDF feature, are unchanged. Keep existing login pages for other features.

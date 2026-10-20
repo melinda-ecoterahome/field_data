@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoExposure™ | My Samples</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #f6f8f7;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #6b7280;
+      --border: #d7ded9;
+      --accent: #0f766e;
+      --accent-dark: #115e59;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 22px 16px;
+      background: linear-gradient(135deg, #0f766e, #164e63);
+      color: white;
+    }
+
+    header h1 { margin: 0 0 6px; font-size: 1.45rem; }
+    header p { margin: 0; font-size: 0.95rem; opacity: 0.9; }
+
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    section, .sample-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    h2 { margin: 0 0 14px; font-size: 1.05rem; }
+
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin: 12px 0 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      background: white;
+    }
+
+    button, a.button {
+      display: inline-block;
+      text-align: center;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button:hover, a.button:hover { background: var(--accent-dark); }
+    button.secondary, a.secondary { background: #e5e7eb; color: #1f2933; }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .status {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      white-space: pre-wrap;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .top-nav a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .sample-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .sample-title h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .photo-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      background: #fbfcfb;
+    }
+
+    .photo-card img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .photo-card small {
+      display: block;
+      color: var(--muted);
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      overflow-x: auto;
+      background: #111827;
+      color: #e5e7eb;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 640px) {
+      .actions { grid-template-columns: 1fr; }
+      .sample-title { flex-direction: column; }
+    }
+      main{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-around;min-height:80px;padding:10px 4px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid #d7ded9;box-shadow:0 -4px 16px rgba(0,22,41,.04);backdrop-filter:blur(12px)}
+    .bottom-nav a{display:flex;flex:1;min-width:0;min-height:48px;max-width:120px;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 2px;border-radius:24px;color:#6b7280;text-decoration:none;font-size:10px;font-weight:700}
+    .bottom-nav a:hover{color:#0f766e}
+    .bottom-nav a[aria-current="page"]{background:#c7eeea;color:#00504b}
+    .bottom-nav a:focus-visible{outline:3px solid #0f766e;outline-offset:1px}
+    .bottom-nav .material-symbols-outlined{font-size:24px;line-height:1}
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>My EcoExposure Samples</h1>
+    <p>Review your submitted samples and confirm that uploads were recorded.</p>
+  </header>
+
+  <main>
+    <div class="top-nav">
+      <a href="./my-samples.html">Refresh My Samples</a>
+    </div>
+
+    <section>
+      <h2>Account</h2>
+      <div class="status" id="authStatus">Checking your account...</div>
+      <div class="actions">
+        <button type="button" onclick="loadSamples()">Refresh My Samples</button>
+        <button type="button" class="secondary" onclick="logout()">Log Out</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>My Samples</h2>
+
+      <div class="actions">
+        <button type="button" onclick="loadSamples()">Refresh My Samples</button>
+        <button type="button" class="secondary" onclick="downloadCSV()">Download My CSV</button>
+      </div>
+
+      <div class="status" id="galleryStatus">Loading your samples...</div>
+    </section>
+
+    <div id="samplesContainer"></div>
+
+    <section>
+      <h2>CSV Preview</h2>
+      <pre id="csvPreview">No CSV loaded yet.</pre>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="index.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg><span>Home</span></a>
+    <a href="new-sample.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Sample</span></a>
+    <a href="my-data.html" aria-current="page"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6H2v16h16v-2"/><rect x="6" y="2" width="16" height="16" rx="1"/><circle cx="16" cy="7" r="1"/><path d="m8 15 4-5 3 3 2-2 3 4"/></svg><span>My Data</span></a>
+    <a href="new_field_data.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12M3 9h10M3 13h7m3 4 6-6 3 3-6 6-4 1z"/></svg><span>Field</span></a>
+    <a href="practice.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6m-5 0v7l-6 9q-1 2 2 2h12q3 0 2-2l-6-9V3M8 15h8"/></svg><span>Practice</span></a>
+    <a href="learn.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 2 4 2 2 3v16c3-1 7-1 10 2 3-3 7-3 10-2V3c-2-1-7-1-10 2zM5 7h4M5 11h4M15 7h4M15 11h4"/></svg><span>Learn</span></a>
+  </nav>
+
+  <script>
+   	const SUPABASE_URL = "https://qvmgrchkmmezpwhlfxjv.supabase.co";
+	const SUPABASE_KEY = "sb_publishable_3M-2qrVCnjO9XfjsBCUf6g_l1wSuwVu";
+    	const TABLE_NAME = "samples";
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    let currentUser = null;
+    let loadedSamples = [];
+
+    window.onerror = function(message, source, lineno, colno, error) {
+      document.getElementById("authStatus").textContent =
+        "JavaScript error: " + message + " at line " + lineno;
+    };
+
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      currentUser = null;
+      loadedSamples = [];
+      window.location.href = "login.html";
+    }
+
+    async function ensureUser() {
+      if (currentUser) return currentUser;
+
+      const { data, error } = await supabaseClient.auth.getUser();
+
+      if (!error && data && data.user) {
+        currentUser = data.user;
+        document.getElementById("authStatus").textContent =
+          "Logged in as " + currentUser.email;
+        return currentUser;
+      }
+
+      window.location.replace("login.html");
+      throw new Error("Please log in to view your samples.");
+    }
+
+    async function loadSamples() {
+      const status = document.getElementById("galleryStatus");
+
+      try {
+        await ensureUser();
+
+        status.textContent = "Loading samples...";
+
+        const { data, error } = await supabaseClient
+          .from(TABLE_NAME)
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        loadedSamples = data || [];
+
+        document.getElementById("csvPreview").textContent =
+          loadedSamples.length ? makeCSV(loadedSamples) : "No saved entries found.";
+
+        await renderSamples(loadedSamples);
+
+        status.textContent = "Loaded " + loadedSamples.length + " sample(s).";
+      } catch (err) {
+        status.textContent = err.message;
+      }
+    }
+
+    async function signedUrl(bucket, path) {
+      if (!bucket || !path) return null;
+
+      const { data, error } = await supabaseClient.storage
+        .from(bucket)
+        .createSignedUrl(path, 60 * 60);
+
+      if (error) {
+        console.error("Signed URL error:", error);
+
+        const status = document.getElementById("galleryStatus");
+        if (status) {
+          status.textContent =
+            "Image preview error: " + error.message +
+            "\nBucket: " + bucket +
+            "\nPath: " + path;
+        }
+
+        return null;
+      }
+
+      return data?.signedUrl || null;
+    }
+
+    async function renderSamples(samples) {
+      const container = document.getElementById("samplesContainer");
+      container.innerHTML = "";
+
+      if (!samples.length) {
+        container.innerHTML =
+          '<section><h2>No samples yet</h2><p class="status">Save a sample from the capture app first.</p></section>';
+        return;
+      }
+
+      for (const sample of samples) {
+        const card = document.createElement("div");
+        card.className = "sample-card";
+
+        card.innerHTML = `
+          <div class="sample-title">
+            <h3>${escapeHTML(sample.sample_id || "Untitled sample")}</h3>
+            <div class="status">${escapeHTML(displayDate(sample.created_at))}</div>
+          </div>
+
+          <div class="meta">
+            <strong>Status:</strong> Submitted successfully<br>
+            <strong>User Name:</strong> ${escapeHTML(sample.user_name || "")}<br>
+            <strong>Location:</strong> ${escapeHTML(sample.location || "")}<br>
+            <strong>Water Type:</strong> ${escapeHTML(sample.water_type || "")}<br>
+            <strong>Minutes Since Reagent:</strong> ${escapeHTML(sample.minutes_since_reagent ?? "")}<br>
+            <strong>GPS:</strong> ${escapeHTML(sample.latitude ?? "")}, ${escapeHTML(sample.longitude ?? "")}<br>
+            <strong>Notes:</strong> ${escapeHTML(sample.notes || "")}
+          </div>
+        `;
+
+        const grid = document.createElement("div");
+        grid.className = "photo-grid";
+
+        const photos = [
+          ["Top View – White Background", sample.top_photo],
+          ["Top View – Grid Background", sample.top_grid_photo],
+          ["Side View", sample.side_photo],
+          ["Close-Up", sample.closeup_photo],
+          ["Other", sample.other_photo]
+        ];
+
+        for (const [label, path] of photos) {
+          if (!path) continue;
+
+          const url = await signedUrl(sample.storage_bucket, path);
+          const photoCard = document.createElement("div");
+          photoCard.className = "photo-card";
+
+          if (url) {
+            photoCard.innerHTML = `
+              <strong>${escapeHTML(label)}</strong>
+              <img src="${url}" alt="${escapeHTML(label)}" loading="lazy">
+              <small>${escapeHTML(path.split("/").pop())}</small>
+            `;
+          } else {
+            photoCard.innerHTML = `
+              <strong>${escapeHTML(label)}</strong>
+              <small>${escapeHTML(path)}</small>
+              <div class="status">Could not create image preview URL. See the My Samples status message above for the exact Supabase Storage error.</div>
+            `;
+          }
+
+          grid.appendChild(photoCard);
+        }
+
+        card.appendChild(grid);
+        container.appendChild(card);
+      }
+    }
+
+    function displayDate(value) {
+      if (!value) return "";
+
+      try {
+        return new Date(value).toLocaleString();
+      } catch {
+        return value;
+      }
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? "");
+
+      if (text.includes(",") || text.includes('"') || text.includes("\n")) {
+        return '"' + text.replace(/"/g, '""') + '"';
+      }
+
+      return text;
+    }
+
+    function makeCSV(samples) {
+      const header = [
+        "id",
+        "created_at",
+        "user_id",
+        "collector",
+        "location",
+        "water_type",
+        "latitude",
+        "longitude",
+        "sample_id",
+        "concentration",
+        "minutes_since_powder",
+        "top_photo",
+        "side_photo",
+        "closeup_photo",
+        "other_photo",
+        "notes"
+      ];
+
+      const rows = samples.map(row =>
+        header.map(key => csvEscape(row[key])).join(",")
+      );
+
+      return [header.join(","), ...rows].join("\n");
+    }
+
+    function downloadCSV() {
+      if (!loadedSamples.length) {
+        document.getElementById("galleryStatus").textContent =
+          "Load samples before downloading CSV.";
+        return;
+      }
+
+      const blob = new Blob([makeCSV(loadedSamples)], {
+        type: "text/csv;charset=utf-8"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = "ecoexposure_my_samples.csv";
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function initializePage() {
+      try {
+        await ensureUser();
+        await loadSamples();
+      } catch (err) {
+        document.getElementById("galleryStatus").textContent = err.message;
+      }
+    }
+
+    initializePage();
+
+  </script>
+</body>
+</html>
