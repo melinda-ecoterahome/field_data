@@ -146,7 +146,9 @@
         grid-column: auto;
       }
     }
-  </style>
+  
+.password-field{position:relative}.password-field input{padding-right:56px}.password-field .password-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:44px;height:44px;margin:0;padding:10px;display:flex;align-items:center;justify-content:center;background:transparent;color:#0f766e;border:0;border-radius:8px;cursor:pointer}.password-field .password-eye:hover{background:#eef7f5}.password-field .password-eye:focus-visible{outline:3px solid #0f766e;outline-offset:1px}.password-eye [hidden]{display:none}.password-eye svg{width:24px;height:24px;pointer-events:none}
+</style>
 </head>
 
 <body>
@@ -172,12 +174,12 @@
       />
 
       <label for="password">Password</label>
-      <input
+      <div class="password-field"><input
         id="password"
         type="password"
         placeholder="Password"
         autocomplete="current-password"
-      />
+      /><button class="password-eye" type="button" aria-controls="password" aria-label="Show password" title="Show password" aria-pressed="false" data-password-label="password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path data-eye-slash d="M3 3l18 18" hidden/></svg></button></div>
 
       <div class="actions">
         <button type="button" onclick="signIn()">
@@ -464,5 +466,24 @@ const PASSWORD_RESET_REDIRECT_URL =
 
     checkAuth();
   </script>
+
+<script>
+(function(){
+ document.querySelectorAll('.password-eye').forEach(function(button){
+  button.addEventListener('click',function(){
+   var input=document.getElementById(button.getAttribute('aria-controls'));
+   var visible=input.type==='password';
+   input.type=visible?'text':'password';
+   button.setAttribute('aria-pressed',String(visible));
+   button.setAttribute('aria-label',(visible?'Hide ':'Show ')+button.dataset.passwordLabel);
+   button.title=(visible?'Hide ':'Show ')+button.dataset.passwordLabel;
+   button.querySelector('[data-eye-slash]').toggleAttribute('hidden',!visible);
+  });
+ });
+ function conceal(){document.querySelectorAll('.password-eye[aria-pressed="true"]').forEach(function(b){b.click();});}
+ window.addEventListener('pagehide',conceal);
+ document.addEventListener('visibilitychange',function(){if(document.hidden)conceal();});
+})();
+</script>
 </body>
 </html>
