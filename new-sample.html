@@ -149,7 +149,7 @@
 
     <section>
       <h2>Save</h2>
-      <div class="info-box" role="status"><strong>MP/NP photo saving: setup pending.</strong> Home tables are ready, but kit verification and sample-save functions still need setup. Use Field Data to save photos and notes now. No model analysis runs.</div><button type="button" disabled title="Kit verification and sample-save setup is pending">Save Sample — Setup Pending</button>
+      <div class="info-box">Verify a PRE or POST code, take photos, then save. The first account to verify a pair owns both stages. Each stage allows one saved submission; retakes before saving do not use it. Photos are stored for review; no model analysis runs.</div><button id="saveSampleButton" type="button" onclick="saveEntry()">Save Sample</button>
       <button class="secondary" type="button" onclick="clearDraft()">Clear Current Draft</button>
       <div id="saveStatus" class="status">No sample saved yet.</div>
     </section>
@@ -312,113 +312,37 @@
     }
 
     function normalizeKitInput(rawCode) {
-      const raw = String(rawCode || "").trim();
-
-      if (!raw) {
-        return {
-          qrToken: "",
-          manualCode: ""
-        };
-      }
-
-      let qrToken = raw;
-
-      try {
-        const scannedURL = new URL(raw);
-
-        qrToken =
-          scannedURL.searchParams.get("kit") ||
-          scannedURL.searchParams.get("token") ||
-          scannedURL.searchParams.get("qr_token") ||
-          raw;
-      } catch (e) {
-        // The scanned value was not a URL. That is fine.
-      }
-
-      const manualCode = raw
-        .toUpperCase()
-        .replace(/[^A-Z0-9]/g, "");
-
-      return {
-        qrToken: String(qrToken || "").trim(),
-        manualCode
-      };
+      const raw=String(rawCode||'').trim();
+      let token=raw,stage=null;
+      const compact=raw.match(/^EE1:(PRE|POST):([a-f0-9]{32})$/i);
+      if(compact){token=compact[2];stage=compact[1].toUpperCase()==='PRE'?'pre_reagent':'post_reaction';}
+      else {try{const j=JSON.parse(raw);if(j&&typeof j==='object'){token=j.token||j.qr_token||raw;stage=j.stage||j.capture_stage||null;}}catch{}
+        try{const url=new URL(raw);token=url.searchParams.get('kit')||url.searchParams.get('token')||url.searchParams.get('qr_token')||token;stage=url.searchParams.get('stage')||stage;}catch{}}
+      if(stage==='PRE')stage='pre_reagent';if(stage==='POST')stage='post_reaction';
+      return {qrToken:String(token).trim(),manualCode:raw.toUpperCase().replace(/[^A-Z0-9]/g,''),captureStage:stage};
     }
 
+    let verifyingKit=false;
     async function verifyKitCode(rawCode) {
-      const input = normalizeKitInput(rawCode);
-
-      const dialogStatus =
-        document.getElementById("qrDialogStatus");
-
-      const pageStatus =
-        document.getElementById("qrStatus");
-
-      currentKit = null;
-
-      if (!input.qrToken && !input.manualCode) {
-        dialogStatus.textContent =
-          "Enter or scan a kit code.";
-        return;
-      }
-
-      dialogStatus.textContent =
-        "Checking kit...";
-
-      const { data, error } =
-        await supabaseClient.rpc(
-          "check_kit_v2",
-          {
-            p_qr_token: input.qrToken,
-            p_manual_code: input.manualCode
-          }
-        );
-
-      if (error) {
-        console.error("Kit verification error:", error);
-
-        dialogStatus.textContent =
-          `Kit check failed: ${error.message}`;
-
-        pageStatus.textContent =
-          "Kit not verified.";
-
-        return;
-      }
-
-      const kit =
-        data && data[0] ? data[0] : null;
-
-      if (!kit) {
-        dialogStatus.textContent =
-          "Kit code not recognized.";
-
-        pageStatus.textContent =
-          "Kit not verified.";
-
-        return;
-      }
-
-      if (
-        kit.kit_status !== "active" ||
-        Number(kit.remaining_samples) <= 0
-      ) {
-        dialogStatus.textContent =
-          "This kit has no submissions remaining. Please scan another QR code to activate a new kit.";
-
-        pageStatus.innerHTML =
-          `<span class="kit-error">${kit.kit_code}: no submissions remaining.</span>`;
-
-        return;
-      }
-
-      currentKit = kit;
-
-      pageStatus.innerHTML =
-        `<span class="kit-ok">Verified: ${kit.kit_code} - ${kit.remaining_samples} submission${Number(kit.remaining_samples) === 1 ? "" : "s"} remaining.</span>`;
-
-      dialogStatus.textContent =
-        "Kit verified.";
+      if(verifyingKit)return;
+      verifyingKit=true;
+      const dialogStatus=document.getElementById('qrDialogStatus'),pageStatus=document.getElementById('qrStatus');
+      currentKit=null;
+      try{
+        const input=normalizeKitInput(rawCode);
+        if(!input.qrToken&&!input.manualCode)throw Error('Enter or scan a kit code.');
+        dialogStatus.textContent='Checking kit…';
+        const {data,error}=await supabaseClient.rpc('check_kit_v2',{p_qr_token:input.qrToken,p_manual_code:input.manualCode,p_capture_stage:input.captureStage||document.querySelector('input[name="captureStage"]:checked')?.value||null});
+        if(error)throw error;
+        const kit=data?.[0];if(!kit)throw Error('Code not recognized or not activated in Home.');
+        if(kit.kit_status!=='active'||Number(kit.remaining_samples)<=0)throw Error('This stage is unavailable or already saved. Check My Samples, or use a new sample pair.');
+        currentKit=kit;
+        const stage=document.querySelector('input[name="captureStage"][value="'+kit.capture_stage+'"]');if(stage)stage.checked=true;
+        const label=document.getElementById('sampleID');if(!label.value.trim())label.value=kit.kit_code.replace(/-(PRE|POST)$/,'');
+        pageStatus.textContent='Verified: '+kit.kit_code+' — '+(kit.capture_stage==='pre_reagent'?'PRE':'POST')+' stage. One save remaining.';
+        dialogStatus.textContent='Kit verified.';
+      }catch(e){dialogStatus.textContent=e.message||String(e);pageStatus.textContent='Kit not verified. '+(e.message||'');}
+      finally{verifyingKit=false;}
     }
 
     function captureGPS() {
@@ -768,150 +692,53 @@
       return path;
     }
 
+    let savingSample=false,startingSample=false,pendingSample=null;
     async function saveEntry() {
-      const status =
-        document.getElementById("saveStatus");
-
-      status.textContent =
-        "Checking login...";
-
-      if (!currentUser) {
-        await requireLogin();
-      }
-
-      if (!currentUser) {
-        return;
-      }
-
-      const userName =
-        document.getElementById("userName")
-          .value.trim();
-
-      const sampleID =
-        document.getElementById("sampleID")
-          .value.trim();
-
-      const hasImage =
-        Object.keys(imageSlots).some(id => Boolean(capturedPhotos[id]));
-
-      const captureStage =
-        document.querySelector(
-          'input[name="captureStage"]:checked'
-        )?.value || "";
-
-      if (!currentKit) {
-        status.textContent =
-          "Scan and verify a kit QR code before saving.";
-        return;
-      }
-
-      if (
-        !userName ||
-        !sampleID ||
-        !captureStage ||
-        !hasImage
-      ) {
-        status.textContent =
-          "Required: User Name, Sample ID, Capture Stage, and at least one image.";
-        return;
-      }
-
-      try {
-        // Compress one at a time to avoid excessive simultaneous CPU/memory
-        // pressure in mobile Safari. Never start network transfer with a JPEG.
-        const jobs = Object.entries(imageSlots)
-          .filter(([slotID]) => Boolean(capturedPhotos[slotID]));
-        const prepared = [];
-        for (let i = 0; i < jobs.length; i++) {
-          const [slotID, slot] = jobs[i];
-          status.textContent = `Preparing photo ${i + 1} of ${jobs.length}...`;
-          const file = await compressImage(
-            capturedPhotos[slotID],
-            `EcoExposure_${slot}_${timestampString()}`
-          );
-          prepared.push({ slotID, slot, file });
+      const status=document.getElementById('saveStatus');if(savingSample||startingSample)return;
+      startingSample=true;let authResult;
+      try{authResult=await supabaseClient.auth.getUser();}catch(e){status.textContent='Could not check your account. Retry Save.';return;}finally{startingSample=false;}
+      const {data:auth,error:authError}=authResult;
+      if(authError||!auth?.user){status.textContent='Sign in before saving. Your draft is still here.';return;}
+      currentUser=auth.user;
+      const captureStage=document.querySelector('input[name="captureStage"]:checked')?.value||'';
+      const metadata={p_kit_id:currentKit?.kit_id,p_user_name:document.getElementById('userName').value.trim(),p_sample_label:document.getElementById('sampleID').value.trim(),p_location:document.getElementById('location').value.trim(),p_water_type:document.getElementById('waterType').value,p_latitude:latitude,p_longitude:longitude,p_notes:document.getElementById('notes').value.trim(),p_capture_stage:captureStage};
+      const photos=Object.entries(imageSlots).filter(([id])=>capturedPhotos[id]).map(([id,slot])=>({id,slot,blob:capturedPhotos[id]}));
+      if(!currentKit){status.textContent='Scan and verify a kit QR code before saving.';return;}
+      if(!metadata.p_user_name||!metadata.p_sample_label||!captureStage||!photos.length){status.textContent='Required: User Name, Sample ID, Capture Stage, and at least one photo.';return;}
+      if(captureStage!==currentKit.capture_stage){status.textContent='Capture stage must match the verified QR code. Scan the correct PRE or POST code.';return;}
+      const signature=JSON.stringify(metadata)+'|'+currentUser.id;
+      if(!pendingSample||pendingSample.signature!==signature||photos.length!==pendingSample.photos.length||photos.some((p,i)=>p.id!==pendingSample.photos[i].id||p.blob!==pendingSample.photos[i].blob))pendingSample={id:crypto.randomUUID(),signature,photos,paths:{},prepared:{}};
+      const attempt=pendingSample;
+      const controls=Array.from(document.querySelectorAll('main input,main textarea,main select,main button'));
+      const disabled=controls.map(c=>c.disabled);controls.forEach(c=>c.disabled=true);savingSample=true;
+      try{
+        const prior=await supabaseClient.from('samples').select('id').eq('id',attempt.id).eq('user_id',currentUser.id).maybeSingle();if(prior.error)throw prior.error;
+        if(prior.data){clearDraft(false);pendingSample=null;status.textContent='✓ Sample was already saved. Open My Samples to review it.';return;}
+        for(let i=0;i<photos.length;i++){
+          const job=photos[i];if(attempt.paths[job.id])continue;
+          status.textContent='Preparing photo '+(i+1)+' of '+photos.length+'…';
+          const file=attempt.prepared[job.id]||await compressImage(job.blob,'EcoExposure_'+job.slot);attempt.prepared[job.id]=file;
+          if(file.type!=='image/webp'||file.size>245000||!isGenuineWebp(new Uint8Array(await file.slice(0,12).arrayBuffer())))throw Error('Photo preparation failed. Retake the photo and try again.');
+          const path=currentUser.id+'/'+attempt.id+'/'+job.slot+'.webp';
+          status.textContent='Uploading photo '+(i+1)+' of '+photos.length+'…';
+          const upload=await supabaseClient.storage.from('sample-images').upload(path,file,{upsert:false,contentType:'image/webp',cacheControl:'3600'});
+          if(upload.error){
+            const code=Number(upload.error.statusCode||upload.error.status);
+            if(code!==409&&!/already exists|duplicate/i.test(upload.error.message||''))throw upload.error;
+            const existing=await supabaseClient.storage.from('sample-images').createSignedUrl(path,60);if(existing.error||!existing.data?.signedUrl)throw upload.error;
+          }
+          attempt.paths[job.id]=path;
         }
-
-        // Upload at most 3 files at once; skip unused camera slots.
-        // allSettled ensures the batch finishes before showing an error.
-        const paths = {};
-        for (let i = 0; i < prepared.length; i += 3) {
-          const batch = prepared.slice(i, i + 3);
-          status.textContent =
-            `Uploading photos ${i + 1}–${i + batch.length} of ${prepared.length}...`;
-          const results = await Promise.allSettled(
-            batch.map(job => uploadOneImage(job.slotID, job.slot, job.file))
-          );
-          const failure = results.find(result => result.status === "rejected");
-          if (failure) throw failure.reason;
-          results.forEach((result, j) => {
-            paths[batch[j].slotID] = result.value;
-          });
-        }
-
-        const top_photo = paths.topImage || null;
-        const top_grid_photo = paths.topGridImage || null;
-        const side_photo = paths.sideImage || null;
-        const closeup_photo = paths.closeUpImage || null;
-        const other_photo = paths.otherImage || null;
-
-        status.textContent =
-          "Saving sample...";
-
-        const rpcArgs = {
-          p_kit_id: currentKit.kit_id,
-          p_user_name: userName,
-          p_sample_label: sampleID,
-          p_location:
-            document.getElementById("location")
-              .value.trim(),
-          p_water_type:
-            document.getElementById("waterType")
-              .value,
-          p_latitude: latitude,
-          p_longitude: longitude,
-          p_notes:
-            document.getElementById("notes")
-              .value.trim(),
-          p_top_photo: top_photo,
-          p_side_photo: side_photo,
-          p_closeup_photo: closeup_photo,
-          p_other_photo: other_photo,
-          p_capture_stage: captureStage,
-          p_top_grid_photo: top_grid_photo
-        };
-
-        const { data, error } =
-          await supabaseClient.rpc(
-            "save_sample_with_kit",
-            rpcArgs
-          );
-
-        if (error) {
-          throw new Error(
-            `Database save failed: ${error.message}`
-          );
-        }
-
-        const result =
-          data && data[0]
-            ? data[0]
-            : null;
-
-        status.textContent =
-          `✅ Sample saved: ${sampleID}. ${result ? result.remaining_samples : ""} kit submission${result && result.remaining_samples === 1 ? "" : "s"} remaining.`;
-
-        currentKit = null;
-
-        clearDraft(false);
-
-      } catch (e) {
-        status.textContent =
-          e.message;
-      }
+        const args={...metadata,p_submission_id:attempt.id,p_top_photo:attempt.paths.topImage||null,p_top_grid_photo:attempt.paths.topGridImage||null,p_side_photo:attempt.paths.sideImage||null,p_closeup_photo:attempt.paths.closeUpImage||null,p_other_photo:attempt.paths.otherImage||null};
+        status.textContent='Saving sample…';const result=await supabaseClient.rpc('save_sample_with_kit',args);if(result.error)throw result.error;
+        if(!result.data?.[0]?.sample_uuid)throw Error('The server did not confirm the saved sample. Retry Save to check it.');
+        clearDraft(false);pendingSample=null;status.textContent='✓ Sample saved. This stage is complete. Scan the matching POST code when ready, or open My Samples to review your photos.';
+      }catch(e){status.textContent='Not confirmed saved: '+(e.message||String(e))+'. Your draft is kept; retry Save to check safely.';}
+      finally{controls.forEach((c,i)=>c.disabled=disabled[i]);savingSample=false;}
     }
 
     function clearDraft(updateStatus = true) {
+      pendingSample=null;
       [
         "userName",
         "location",
