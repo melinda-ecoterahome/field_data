@@ -39,9 +39,10 @@ main{max-width:900px;margin:auto;padding:16px}.top-nav{display:flex;gap:12px;fle
     <a href="learn.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 2 4 2 2 3v16c3-1 7-1 10 2 3-3 7-3 10-2V3c-2-1-7-1-10 2zM5 7h4M5 11h4M15 7h4M15 11h4"/></svg><span>Learn</span></a>
   </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="field-instruments.js"></script>
 <script>
-const SUPABASE_URL="https://qvmgrchkmmezpwhlfxjv.supabase.co";
-const SUPABASE_KEY="sb_publishable_3M-2qrVCnjO9XfjsBCUf6g_l1wSuwVu";
+const SUPABASE_URL="https://qximbeodwjhxuzcqenvs.supabase.co";
+const SUPABASE_KEY="sb_publishable_y5c-8UikxGZZJzyea0lG6g_TibWgKPW";
 const OTHER_DATA_BUCKET="field-data";
 const OTHER_DATA_TABLE="field_data";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -67,7 +68,7 @@ async function load(){
   const status=document.getElementById("status"),box=document.getElementById("entries");
   if(!await requireLogin())return;
   const {data,error}=await supabaseClient.from(OTHER_DATA_TABLE)
-    .select("id,user_id,file_path,notes,latitude,longitude,created_at")
+    .select("id,user_id,file_path,notes,latitude,longitude,created_at,observed_at,instrument_reading")
     .eq("user_id",currentUser.id).order("created_at",{ascending:false});
   if(error){status.textContent="Could not load Field Data: "+error.message;return}
   if(!data||!data.length){status.style.display="none";box.innerHTML='<div class="empty">No Field Data saved yet.</div>';return}
@@ -79,6 +80,7 @@ async function load(){
     card.innerHTML=`<div class="photo">${url?`<img src="${esc(url)}" alt="Field Data photo">`:'<div class="no-photo">No photo</div>'}</div>
       <div class="content"><div class="meta">${row.created_at?`<div><strong>Saved:</strong> ${esc(fmt(row.created_at))}</div>`:""}${gps?`<div><strong>GPS:</strong> ${esc(gps)}</div>`:""}</div>
       <div class="notes">${row.notes?esc(row.notes):'<span style="color:#6b7280">No notes</span>'}</div></div>`;
+    if(row.instrument_reading) card.appendChild(window.FieldInstruments.savedElement(row.instrument_reading));
     box.appendChild(card);
   }
 }

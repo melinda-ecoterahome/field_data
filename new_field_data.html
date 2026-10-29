@@ -233,7 +233,9 @@
   </header>
 
   <main>
-<section style="background:#fffbeb;border-color:#fcd34d"><strong>Instrument Beta · Preview</strong><p>Try adding an instrument and recording manual readings. Preview data stays in this tab and is lost when you reload or close it. Supabase saving is not connected yet. Download a card or PDF to keep your observation.</p></section>
+    <div class="top-nav">
+      <a href="./my-field-data.html">My Field Data →</a>
+    </div>
 
     <section>
       <h2>Photo</h2>
@@ -278,8 +280,8 @@
 
     <section>
       <h2>Save &amp; Share Observation</h2>
-<button id="saveObservationButton" type="button" onclick="saveEntry()">Save Observation (Coming Soon)</button>
-<div class="info-box">This preview does not save to your account. You can download or share an observation card or PDF.</div>
+<button id="saveObservationButton" type="button" onclick="saveEntry()">Save to My Field Data</button>
+<div class="info-box">Saving requires an ecotera home account. <a href="login.html" target="_blank" rel="noopener">Sign in in a new tab</a>, then return here. Your draft stays on this page.</div>
       <button id="imageButton" type="button" onclick="prepareObservationImage()">Create Observation Card</button>
       <img id="cardPreview" alt="Completed observation card preview" hidden style="width:100%;margin-top:14px;border-radius:10px;border:1px solid var(--border)">
       <button id="shareImageButton" type="button" onclick="shareObservationImage()" hidden>Share Observation</button>
@@ -300,7 +302,7 @@
       <button id="downloadPDFButton" class="secondary" type="button" onclick="downloadPreparedPDF()" hidden>Download PDF</button>
       <div id="pdfStatus" class="status" role="status" aria-live="polite"></div>
       <div class="info-box">Field observation only — not a laboratory analytical result.</div>
-      <div id="saveStatus" class="status">Observations stay on this page until you clear or leave it.</div>
+      <div id="saveStatus" class="status">Unsaved drafts stay on this page. Select Save to My Field Data to store your observation in your Home account.</div>
     </section>
   </main>
 
@@ -334,7 +336,7 @@
     </div>
   </dialog>
 
-  <script src="field-preview.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
     /*
@@ -361,7 +363,17 @@
         Configure matching per-user storage policies for field-data.
     */
 
-    const supabaseClient = window.fieldPreviewClient;
+    const SUPABASE_URL = "https://qximbeodwjhxuzcqenvs.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_y5c-8UikxGZZJzyea0lG6g_TibWgKPW";
+
+    const OTHER_DATA_BUCKET = "field-data";
+    const OTHER_DATA_TABLE = "field_data";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
     let currentUser = null;
     let latitude = null;
     let longitude = null;
@@ -428,7 +440,7 @@ return {id: observationId, photo: selectedPhotoBlob, notes, latitude, longitude,
       const gps = Number.isFinite(observation.latitude) && Number.isFinite(observation.longitude)
         ? observation.latitude.toFixed(6) + ', ' + observation.longitude.toFixed(6) : 'Not captured';
       const body = [
-        'Ecotera Home — Field Observation',
+        'ecotera home — Field Observation',
         'Timestamp: ' + observation.timestamp,
         'GPS coordinates: ' + gps,
         '', 'Field notes:', observation.notes || 'No notes added.', window.FieldInstruments.text(observation.instrument), '',
@@ -437,7 +449,7 @@ return {id: observationId, photo: selectedPhotoBlob, notes, latitude, longitude,
         '', 'ecoterahome.com'
       ].join('\n');
       const href = 'mailto:' + encodeURIComponent(input.value.trim()) +
-        '?subject=' + encodeURIComponent('Ecotera Home Field Observation') + '&body=' + encodeURIComponent(body);
+        '?subject=' + encodeURIComponent('ecotera home Field Observation') + '&body=' + encodeURIComponent(body);
       const link = document.createElement('a');
       link.href = href; document.body.appendChild(link); link.click(); link.remove();
       status.textContent = 'Email draft requested in your email app. Attach the PDF if needed, then send. This page has not sent an email.';
@@ -447,7 +459,7 @@ return {id: observationId, photo: selectedPhotoBlob, notes, latitude, longitude,
       const box = document.getElementById("gpsStatus");
 
       if (!window.isSecureContext) {
-        box.textContent = 'GPS requires HTTPS. Open your secure Ecotera Home website, then allow location access.';
+        box.textContent = 'GPS requires HTTPS. Open your secure ecotera home website, then allow location access.';
         return;
       }
       if (!navigator.geolocation) {
@@ -711,7 +723,7 @@ return {id: observationId, photo: selectedPhotoBlob, notes, latitude, longitude,
       });
     }
     async function buildObservationPDF(observation) {
-      const logo = await loadReportImage('images/ecotera-asia-logo-300dpi-print.png').catch(() => null);
+      const logo = await loadReportImage('images/ecotera-home-logo.png').catch(() => null);
       let photo = null;
       if (observation.photo) {
         const url = URL.createObjectURL(observation.photo);
@@ -730,7 +742,7 @@ return {id: observationId, photo: selectedPhotoBlob, notes, latitude, longitude,
         ctx.fillStyle = '#115e59'; ctx.font = 'bold 36px Arial';
         ctx.fillText('Field Observation', margin, 215);
         ctx.fillStyle = '#4b5563'; ctx.font = '22px Arial';
-        ctx.fillText('Ecotera Home', margin, 252);
+        ctx.fillText('ecotera home', margin, 252);
         ctx.fillStyle = '#374151'; ctx.font = '20px Arial';
         ctx.fillText('Field observation only — not a laboratory analytical result.', margin, 1610);
         ctx.fillText('ecoterahome.com', margin, 1650);
@@ -844,7 +856,7 @@ if (observation.instrument) { line('Manual instrument readings', true); wrapped(
       const status = document.getElementById('pdfStatus');
       try {
         // No asynchronous preparation here: preserve the tap's native-share activation.
-        await navigator.share({files: [preparedPDF], title: 'Ecotera Home Field Observation'});
+        await navigator.share({files: [preparedPDF], title: 'ecotera home Field Observation'});
         status.textContent = 'PDF shared.';
       } catch (e) {
         if (e.name === 'AbortError') status.textContent = 'Sharing cancelled. Your PDF is still ready.';
@@ -854,7 +866,7 @@ if (observation.instrument) { line('Manual instrument readings', true); wrapped(
 
 
     async function renderObservationCard(observation) {
-      const logo = await loadReportImage('images/ecotera-asia-logo-300dpi-print.png').catch(() => null);
+      const logo = await loadReportImage('images/ecotera-home-logo.png').catch(() => null);
       let photo = null;
       if (observation.photo) {
         const url = URL.createObjectURL(observation.photo);
@@ -943,7 +955,7 @@ if (observation.instrument) { line('Manual instrument readings', true); wrapped(
       if (!supportsPDFSharing(preparedImage)) { downloadObservationImage(); return; }
       const status = document.getElementById('imageStatus');
       try {
-        await navigator.share({files: [preparedImage], title: 'Ecotera Home Field Observation'});
+        await navigator.share({files: [preparedImage], title: 'ecotera home Field Observation'});
         status.textContent = 'Observation shared.';
       } catch (e) {
         if (e.name === 'AbortError') status.textContent = 'Sharing cancelled. Your card is still ready.';

@@ -1,4 +1,4 @@
-/* Ecotera Home: instrument registration and manual readings beta. No inference. */
+/* ecotera home: instrument registration and manual readings beta. No inference. */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -39,7 +39,7 @@ $('instrumentBetaMount').innerHTML=`<section class="instrument-beta" aria-labell
 <div id="instrumentStatus" class="status" role="status" aria-live="polite"></div>
 <div id="referencePreview"></div><div id="readingFields"></div>
 <details id="registerDetails"><summary>Add Instrument <span class="beta-tag">Beta</span></summary>
-<p class="hint">Add a preview instrument to try the form. Instruments and readings are temporary in this tab; download an observation card or PDF to keep a copy.</p>
+<p class="hint">Sign in to save instruments to your account. New registrations keep their own definition; previous readings keep the definition used at capture.</p>
 <form id="instrumentForm">
 <label for="instrumentName">Instrument / test name *</label><input id="instrumentName" maxlength="120" required placeholder="e.g. My 9-in-1 water test strip">
 <label for="instrumentKind">Type *</label><select id="instrumentKind"><option value="meter">Meter</option><option value="strip">Test strip</option><option value="other">Other test</option></select>
@@ -50,7 +50,7 @@ $('instrumentBetaMount').innerHTML=`<section class="instrument-beta" aria-labell
 <label for="chartFile">Reference chart photo (optional, JPEG / PNG / WebP, up to 8 MB)</label><input id="chartFile" type="file" accept="image/jpeg,image/png,image/webp">
 <p class="hint">For strips, add each pad in physical order. Copy the values and colors from the manufacturer’s chart; screen colors are approximate references.</p>
 <div id="parameterDefinitions"></div><button id="addParameter" class="secondary" type="button">Add Measurement / Pad</button>
-<button id="registerInstrumentButton" type="submit">Add Preview Instrument</button>
+<button id="registerInstrumentButton" type="submit">Save Instrument</button>
 <div id="registrationStatus" class="status" role="status" aria-live="polite"></div></form></details></section>`;
 function input(label,type,value=''){const wrap=make('div',null),id='beta-'+crypto.randomUUID(),el=make('input',null,{id,type,value});wrap.append(make('label',label,{htmlFor:id}),el);return {wrap,el};}
 function addScale(container,value='',color='#ffffff'){
@@ -78,7 +78,7 @@ async function refresh(){
   const {data,error}=await supabaseClient.from('field_instruments').select('id,name,kind,manufacturer,model,serial_lot,read_seconds,instructions,parameters,reference_chart_path,version').eq('user_id',u.id).order('created_at',{ascending:false});if(error)throw error;
   instruments=data||[];const select=$('instrumentSelect'),old=selected?.id;select.replaceChildren(make('option','None — general observation',{value:''}));for(const row of instruments)select.appendChild(make('option',row.name+(row.serial_lot?' · '+row.serial_lot:''),{value:row.id}));
   if(old&&instruments.some(r=>r.id===old))select.value=old;else if(old){reset();changed();}
-  $('instrumentStatus').textContent=instruments.length?'Choose an instrument to enter manual readings.':'No preview instruments yet. Open Add Instrument · Beta below.';
+  $('instrumentStatus').textContent=instruments.length?'Choose an instrument to enter manual readings.':'No saved instruments yet. Open Add Instrument · Beta below.';
  }catch(e){$('instrumentStatus').textContent=setupError(e);}finally{button.disabled=false;}
 }
 $('refreshInstruments').onclick=refresh;
@@ -99,7 +99,7 @@ $('instrumentForm').onsubmit=async event=>{
   status.textContent='Saving instrument…';const {error}=await supabaseClient.from('field_instruments').insert(definition);if(error)throw error;completed=true;
   await refresh();if(!instruments.some(r=>r.id===id)){status.textContent='Instrument saved. Refresh My Instruments to load it.';return;}
   if(!selected){$('instrumentSelect').value=id;await selectInstrument();}
-  $('instrumentForm').reset();$('parameterDefinitions').replaceChildren();addParameter();$('registerDetails').open=false;status.textContent='Instrument saved.';$('instrumentStatus').textContent='Preview instrument added. Enter its readings below.';
+  $('instrumentForm').reset();$('parameterDefinitions').replaceChildren();addParameter();$('registerDetails').open=false;status.textContent='Instrument saved.';$('instrumentStatus').textContent='Instrument saved. Enter its readings below.';
  }catch(e){if(definitionId&&!completed){try{const check=await supabaseClient.from('field_instruments').select('id').eq('id',definitionId).maybeSingle();if(!check.error&&check.data){await refresh();status.textContent='Instrument saved. Choose it from My Instruments.';return;}if(!check.error&&!check.data&&chartPath)await supabaseClient.storage.from('field-data').remove([chartPath]);}catch{}}status.textContent=(e.message||String(e))+' Your registration details have been kept.';}finally{registrationBusy=false;button.disabled=false;}
 };
 async function selectInstrument(){
@@ -125,7 +125,7 @@ async function selectInstrument(){
 }
 $('instrumentSelect').onchange=selectInstrument;
 window.saveEntry=async()=>{
- const status=$('saveStatus'),button=$('saveObservationButton');if(window.FIELD_INSTRUMENT_PREVIEW){status.textContent='Preview only — nothing was saved to your account. Download or share an observation card or PDF to keep your readings.';return;}if(savingObservation)return;
+ const status=$('saveStatus'),button=$('saveObservationButton');if(savingObservation)return;
  const observation=observationSnapshot();if(!observation){status.textContent='Add an observation and complete any selected manual readings first.';return;}
  savingObservation=true;button.disabled=true;
  let uploadedPath=null,rowSaved=false;
@@ -137,7 +137,7 @@ window.saveEntry=async()=>{
   if(observation.photo){
    if(observation.photo.size>20*1024*1024)throw Error('Choose a photo up to 20 MB.');
    let file;
-   if(observation.instrument){if(!['image/jpeg','image/png','image/webp'].includes(observation.photo.type))throw Error('For instrument photos, choose JPEG, PNG or WebP to preserve the original image.');file=observation.photo;}else file=await compressImage(observation.photo,'FieldData');
+   if(observation.instrument){if(!['image/jpeg','image/png','image/webp'].includes(observation.photo.type))throw Error('For instrument photos, choose JPEG, PNG or WebP to preserve the uploaded image.');file=observation.photo;}else file=await compressImage(observation.photo,'FieldData');
    const ext={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type];if(!ext)throw Error('Unsupported photo format.');
    uploadedPath=u.id+'/observations/'+observation.id+'.'+ext;status.textContent='Uploading photo…';const result=await supabaseClient.storage.from('field-data').upload(uploadedPath,file,{upsert:false,contentType:file.type});if(result.error){uploadedPath=null;throw result.error;}
   }

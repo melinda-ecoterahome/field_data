@@ -149,7 +149,7 @@
 
     <section>
       <h2>Save</h2>
-      <button type="button" onclick="saveEntry()">Save Sample</button>
+      <div class="info-box" role="status"><strong>MP/NP photo saving: setup pending.</strong> Home tables are ready, but kit verification and sample-save functions still need setup. Use Field Data to save photos and notes now. No model analysis runs.</div><button type="button" disabled title="Kit verification and sample-save setup is pending">Save Sample — Setup Pending</button>
       <button class="secondary" type="button" onclick="clearDraft()">Clear Current Draft</button>
       <div id="saveStatus" class="status">No sample saved yet.</div>
     </section>
@@ -215,8 +215,8 @@
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <script>
-	const SUPABASE_URL = "https://qvmgrchkmmezpwhlfxjv.supabase.co";
-	const SUPABASE_KEY = "sb_publishable_3M-2qrVCnjO9XfjsBCUf6g_l1wSuwVu";
+	const SUPABASE_URL = "https://qximbeodwjhxuzcqenvs.supabase.co";
+	const SUPABASE_KEY = "sb_publishable_y5c-8UikxGZZJzyea0lG6g_TibWgKPW";
 
 
     const supabaseClient = window.supabase.createClient(

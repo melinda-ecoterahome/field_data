@@ -221,20 +221,18 @@
 
   <script>
     const SUPABASE_URL =
-  "https://qvmgrchkmmezpwhlfxjv.supabase.co";
+  "https://qximbeodwjhxuzcqenvs.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_3M-2qrVCnjO9XfjsBCUf6g_l1wSuwVu";
+  "sb_publishable_y5c-8UikxGZZJzyea0lG6g_TibWgKPW";
 
-// TODO: Set to the confirmed absolute Ecotera Asia GitHub Pages URL for login.html.
-// Also allow this URL in the Asia Supabase Auth redirect settings before use.
-const LOGIN_REDIRECT_URL =
-  "";
+// Home signup confirmation return URL.
+// Also allow this URL in the Home Supabase Auth redirect settings before use.
+const LOGIN_REDIRECT_URL = "https://field-app.ecoterahome.com/login.html";
 
-// TODO: Set to the confirmed absolute Ecotera Asia GitHub Pages URL for reset-password.html.
-// Also allow this URL in the Asia Supabase Auth redirect settings before use.
-const PASSWORD_RESET_REDIRECT_URL =
-  "";
+// Home password recovery return URL.
+// Also allow this URL in the Home Supabase Auth redirect settings before use.
+const PASSWORD_RESET_REDIRECT_URL = "https://field-app.ecoterahome.com/reset-password.html";
 
     const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
@@ -384,7 +382,7 @@ const PASSWORD_RESET_REDIRECT_URL =
         status.textContent =
           `Logged in as ${data.user.email}. Opening New Sample...`;
 
-        window.location.href = "new-sample.html";
+        window.location.href = "index.html";
       } catch (error) {
         console.error("Unexpected login error:", error);
 

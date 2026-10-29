@@ -1,1 +1,40 @@
-Replace root new-sample.html and add images/demo/sample-comparison.png. This is the simplified demo version: no kit verification, login redirect, camera use or database saves. GPS and form fields remain. All photo buttons open the supplied comparison. Other pages, including the Field Data PDF feature, are unchanged. Keep existing login pages for other features.
+ECOTERA HOME APP — HOME CONNECTION UPDATE
+
+Unzip and upload the CONTENTS of this folder to the root of melinda-ecoterahome/field_data.
+Do not upload the containing folder or ZIP as the website. Commit the changes.
+Keep any existing image assets that are not in this package; uploading does not require deleting files.
+
+All connected pages now use project qximbeodwjhxuzcqenvs. The public browser key is included; no secret key or SMTP password is included.
+
+Ready to test after deployment:
+- Signup, confirmation email, login and password reset (eye buttons preserved).
+- Instrument registration and manual field readings: now connected to Home rather than the temporary preview.
+- Field observations, private photo uploads, My Field Data and combined My Data.
+
+In Home Supabase Authentication / URL Configuration, set Site URL to https://field-app.ecoterahome.com
+and allow https://field-app.ecoterahome.com/login.html and https://field-app.ecoterahome.com/reset-password.html.
+SMTP and email template settings remain managed in Supabase. The email-templates HTML is supplied for reference; uploading it does not install it in Supabase.
+
+MP/NP: samples and manual-review tables exist, but check_kit_v2 and save_sample_with_kit are not installed. Save Sample is explicitly disabled until that separate setup is finished. No model, automated strip interpretation, or calibration calculation runs. Manual sample-review entry has no UI yet.
+
+User separation: Field Data and instrument pages filter by the signed-in user; database/storage RLS must be tested with two accounts. Nothing sends photos to a central project. Other group deployments need their own project URL/key and their own setup.
+
+This package is based on the supplied repository ZIP plus the updates made in this chat. It cannot include unrelated later repository edits.
+Some illustration assets were already missing from the supplied ZIP. Keep them if they exist on GitHub, or supply them later:
+workflow_images/reagent_powder.jpg
+images/mount_fuji_japan_location.png
+images/manila_philippines_location.jpg
+images/stl_tap_usa_location.jpg
+images/denver_tap_usa_location.jpg
+images/galveston_bay_usa_location.jpg
+images/ohio-lake_usa_location.jpg
+images/stockholm_sweden_location.jpg
+images/london_england_location.jpg
+images/paris_france_location.jpg
+images/ecoexposure-kit-contents-guide.png
+images/ecoexposure-zero-shear-guide.png
+images/poke-clumps.png
+images/z-model.png
+images/photobox-instructions.png
+
+Validation: inline/external JavaScript syntax and Home configuration checked. Browser tests use simulated backend responses, not live accounts. Live email delivery, RLS isolation and saves must be verified after upload.
